@@ -13,6 +13,12 @@ mvn clean install
 mvn test
 ```
 
+### Format package code
+
+```bash
+mvn spotless:apply
+```
+
 ### Add as dependency
 
 ```xml
