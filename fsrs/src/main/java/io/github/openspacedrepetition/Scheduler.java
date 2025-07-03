@@ -2,6 +2,8 @@
 package io.github.openspacedrepetition;
 
 import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 public class Scheduler {
 
@@ -40,5 +42,24 @@ public class Scheduler {
 
         this.DECAY = -this.parameters[20];
         this.FACTOR = Math.pow(0.9, 1.0 / this.DECAY) - 1;
+    }
+
+    public double getCardRetrievability(Card card, Instant currentDatetime) {
+
+        Instant cardLastReview = card.getLastReview();
+        Double cardStability = card.getStability();
+
+        if (cardLastReview == null) {
+            return 0;
+        }
+
+        if (currentDatetime == null) {
+            currentDatetime = Instant.now();
+        }
+
+        int elapsedDays =
+                (int) Math.max(0, ChronoUnit.DAYS.between(cardLastReview, currentDatetime));
+
+        return Math.pow(1 + this.FACTOR * elapsedDays / cardStability, this.DECAY);
     }
 }
