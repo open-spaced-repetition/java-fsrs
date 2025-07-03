@@ -66,4 +66,12 @@ public class Card {
 
         this.lastReview = lastReview;
     }
+
+    public Instant getLastReview() {
+        return this.lastReview;
+    }
+
+    public Double getStability() {
+        return this.stability;
+    }
 }
