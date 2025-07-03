@@ -21,13 +21,13 @@ enum State {
 
 public class Card {
 
-    public int cardId;
-    public State state;
-    public Integer step;
-    public Double stability;
-    public Double difficulty;
-    public Instant due;
-    public Instant lastReview;
+    private int cardId;
+    private State state;
+    private Integer step;
+    private Double stability;
+    private Double difficulty;
+    private Instant due;
+    private Instant lastReview;
 
     public Card(
             Integer cardId,
