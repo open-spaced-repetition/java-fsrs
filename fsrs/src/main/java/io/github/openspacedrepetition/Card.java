@@ -67,6 +67,18 @@ public class Card {
         this.lastReview = lastReview;
     }
 
+    public Card(Card otherCard) {
+
+        this.cardId = otherCard.cardId;
+        this.state = otherCard.state;
+        this.step = otherCard.step;
+        this.stability = otherCard.stability;
+        this.difficulty = otherCard.difficulty;
+        this.due = otherCard.due;
+        this.lastReview = otherCard.lastReview;
+
+    }
+
     public Instant getLastReview() {
         return this.lastReview;
     }
