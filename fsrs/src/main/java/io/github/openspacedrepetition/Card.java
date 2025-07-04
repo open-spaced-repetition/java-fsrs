@@ -86,4 +86,20 @@ public class Card {
     public Double getStability() {
         return this.stability;
     }
+
+    public void setStability(double stability) {
+        this.stability = stability;
+    }
+
+    public State getState() {
+        return this.state;
+    }
+
+    public Double getDifficulty() {
+        return this.difficulty;
+    }
+
+    public void setDifficulty(double difficulty) {
+        this.difficulty = difficulty;
+    }
 }
