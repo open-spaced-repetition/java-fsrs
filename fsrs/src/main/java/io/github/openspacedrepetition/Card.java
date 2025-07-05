@@ -76,7 +76,26 @@ public class Card {
         this.difficulty = otherCard.difficulty;
         this.due = otherCard.due;
         this.lastReview = otherCard.lastReview;
+    }
 
+    public int getCardId() {
+        return this.cardId;
+    }
+
+    public Integer getStep() {
+        return this.step;
+    }
+
+    public void setStep(Integer step) {
+        this.step = step;
+    }
+
+    public void setDue(Instant due) {
+        this.due = due;
+    }
+
+    public void setLastReview(Instant lastReview) {
+        this.lastReview = lastReview;
     }
 
     public Instant getLastReview() {
@@ -93,6 +112,10 @@ public class Card {
 
     public State getState() {
         return this.state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
     }
 
     public Double getDifficulty() {
