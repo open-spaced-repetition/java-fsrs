@@ -410,4 +410,15 @@ public class Scheduler {
 
         return reviewCard(card, rating, null, null);
     }
+
+    public CardAndReviewLog reviewCard(Card card, Rating rating, Instant reviewDatetime) {
+
+        return reviewCard(card, rating, reviewDatetime, null);
+    }
+
+    public CardAndReviewLog reviewCard(Card card, Rating rating, Integer reviewDuration) {
+
+        return reviewCard(card, rating, null, reviewDuration);
+    }
+
 }
