@@ -67,6 +67,11 @@ public class Card {
         this.lastReview = lastReview;
     }
 
+    public Card() {
+
+        this(null, State.LEARNING, null, null, null, null, null);
+    }
+
     public Card(Card otherCard) {
 
         this.cardId = otherCard.cardId;
@@ -88,6 +93,10 @@ public class Card {
 
     public void setStep(Integer step) {
         this.step = step;
+    }
+
+    public Instant getDue() {
+        return this.due;
     }
 
     public void setDue(Instant due) {
