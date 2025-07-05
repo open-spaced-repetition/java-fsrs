@@ -100,7 +100,21 @@ public class Scheduler {
     }
 
     private double shortTermStability(double stability, Rating rating) {
-        // TODO: 
+
+        double shortTermStabilityIncrease = Math.exp(this.parameters[17] * (rating.getValue() - 3 + this.parameters[18])) * Math.pow(stability, -this.parameters[19]);
+
+        if (rating == Rating.GOOD || rating == Rating.EASY) {
+
+            shortTermStabilityIncrease = Math.max(shortTermStabilityIncrease, 1.0);
+
+        }
+
+        double shortTermStability = stability * shortTermStabilityIncrease;
+
+        shortTermStability = clampStability(shortTermStability);
+
+        return shortTermStability;
+
     }
 
     private double nextDifficulty(double difficulty, Rating rating) {
