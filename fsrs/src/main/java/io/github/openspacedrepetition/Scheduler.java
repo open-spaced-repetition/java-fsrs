@@ -57,10 +57,7 @@ public class Scheduler {
 
     public double getCardRetrievability(Card card, Instant currentDatetime) {
 
-        Instant cardLastReview = card.getLastReview();
-        Double cardStability = card.getStability();
-
-        if (cardLastReview == null) {
+        if (card.getLastReview() == null) {
             return 0;
         }
 
@@ -69,9 +66,9 @@ public class Scheduler {
         }
 
         int elapsedDays =
-                (int) Math.max(0, ChronoUnit.DAYS.between(cardLastReview, currentDatetime));
+                (int) Math.max(0, ChronoUnit.DAYS.between(card.getLastReview(), currentDatetime));
 
-        return Math.pow(1 + this.FACTOR * elapsedDays / cardStability, this.DECAY);
+        return Math.pow(1 + this.FACTOR * elapsedDays / card.getStability(), this.DECAY);
     }
 
     private double clampStability(double stability) {
@@ -219,28 +216,26 @@ public class Scheduler {
             Card card, Rating rating, Instant reviewDatetime, Integer reviewDuration) {
 
         card = new Card(card);
-        State cardState = card.getState();
-        Double cardStability = card.getStability();
-        Double cardDifficulty = card.getDifficulty();
 
         if (reviewDatetime == null) {
             reviewDatetime = Instant.now();
         }
 
-        Instant cardLastReview = card.getLastReview();
         Integer daysSinceLastReview;
 
         Duration nextInterval = Duration.ofMillis(0); // this is just a temporary initialization
 
-        if (cardLastReview == null) {
+        if (card.getLastReview() == null) {
             daysSinceLastReview = null;
         } else {
-            daysSinceLastReview = (int) ChronoUnit.DAYS.between(cardLastReview, reviewDatetime);
+            daysSinceLastReview =
+                    (int) ChronoUnit.DAYS.between(card.getLastReview(), reviewDatetime);
         }
 
+        State cardState = card.getState();
         switch (cardState) {
             case LEARNING -> {
-                if (cardStability == null && cardDifficulty == null) {
+                if (card.getStability() == null && card.getDifficulty() == null) {
 
                     double initialStability = initialStability(rating);
                     double initialDifficulty = initialDifficulty(rating);
@@ -250,8 +245,8 @@ public class Scheduler {
 
                 } else if (daysSinceLastReview != null && daysSinceLastReview < 1) {
 
-                    double shortTermStability = shortTermStability(cardStability, rating);
-                    double nextDifficulty = nextDifficulty(cardDifficulty, rating);
+                    double shortTermStability = shortTermStability(card.getStability(), rating);
+                    double nextDifficulty = nextDifficulty(card.getDifficulty(), rating);
 
                     card.setStability(shortTermStability);
                     card.setDifficulty(nextDifficulty);
@@ -261,8 +256,12 @@ public class Scheduler {
                     double retrievability = getCardRetrievability(card, reviewDatetime);
 
                     double nextStability =
-                            nextStability(cardDifficulty, cardStability, retrievability, rating);
-                    double nextDifficulty = nextDifficulty(cardDifficulty, rating);
+                            nextStability(
+                                    card.getDifficulty(),
+                                    card.getStability(),
+                                    retrievability,
+                                    rating);
+                    double nextDifficulty = nextDifficulty(card.getDifficulty(), rating);
 
                     card.setStability(nextStability);
                     card.setDifficulty(nextDifficulty);
@@ -273,10 +272,9 @@ public class Scheduler {
                 first if-clause handles edge case where the Card in the Learning state was previously
                 scheduled with a Scheduler with more learning_steps than the current Scheduler
                 */
-                Integer cardStep = card.getStep();
                 int nextIntervalDays;
                 if (this.learningSteps.length == 0
-                        || (cardStep >= this.learningSteps.length
+                        || (card.getStep() >= this.learningSteps.length
                                 && (rating == Rating.HARD
                                         || rating == Rating.GOOD
                                         || rating == Rating.EASY))) {
