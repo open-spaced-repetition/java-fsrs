@@ -42,6 +42,10 @@ public class Scheduler {
         this.FACTOR = Math.pow(0.9, 1.0 / this.DECAY) - 1;
     }
 
+    public int getMaximumInterval() {
+        return this.maximumInterval;
+    }
+
     public static Scheduler defaultScheduler() {
         return new Builder().build();
     }
@@ -420,5 +424,4 @@ public class Scheduler {
 
         return reviewCard(card, rating, null, reviewDuration);
     }
-
 }
