@@ -44,6 +44,17 @@ public class Scheduler {
         this.FACTOR = Math.pow(0.9, 1.0 / this.DECAY) - 1;
     }
 
+    public Scheduler() {
+
+        this(
+                DEFAULT_PARAMETERS,
+                0.9,
+                new Duration[] {Duration.ofMinutes(1), Duration.ofMinutes(10)},
+                new Duration[] {Duration.ofMinutes(10)},
+                36500,
+                true);
+    }
+
     public double getCardRetrievability(Card card, Instant currentDatetime) {
 
         Instant cardLastReview = card.getLastReview();
@@ -361,4 +372,11 @@ public class Scheduler {
 
         return new CardAndReviewLog(card, reviewLog);
     }
+
+    public CardAndReviewLog reviewCard(Card card, Rating rating) {
+
+        return reviewCard(card, rating, null, null);
+
+    }
+
 }
