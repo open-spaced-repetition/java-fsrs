@@ -87,28 +87,20 @@ public class Card {
         return this.cardId;
     }
 
+    public State getState() {
+        return this.state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
+
     public Integer getStep() {
         return this.step;
     }
 
     public void setStep(Integer step) {
         this.step = step;
-    }
-
-    public Instant getDue() {
-        return this.due;
-    }
-
-    public void setDue(Instant due) {
-        this.due = due;
-    }
-
-    public void setLastReview(Instant lastReview) {
-        this.lastReview = lastReview;
-    }
-
-    public Instant getLastReview() {
-        return this.lastReview;
     }
 
     public Double getStability() {
@@ -119,19 +111,27 @@ public class Card {
         this.stability = stability;
     }
 
-    public State getState() {
-        return this.state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
-    }
-
     public Double getDifficulty() {
         return this.difficulty;
     }
 
     public void setDifficulty(double difficulty) {
         this.difficulty = difficulty;
+    }
+
+    public Instant getDue() {
+        return this.due;
+    }
+
+    public void setDue(Instant due) {
+        this.due = due;
+    }
+
+    public Instant getLastReview() {
+        return this.lastReview;
+    }
+
+    public void setLastReview(Instant lastReview) {
+        this.lastReview = lastReview;
     }
 }
