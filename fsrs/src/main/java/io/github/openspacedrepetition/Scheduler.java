@@ -11,12 +11,14 @@ public class Scheduler {
         0.2172, 1.1771, 3.2602, 16.1507, 7.0114, 0.57, 2.0966, 0.0069, 1.5261, 0.112, 1.0178, 1.849,
         0.1133, 0.3127, 2.2934, 0.2191, 3.0004, 0.7536, 0.3332, 0.1437, 0.2
     };
+    private static final Duration[] DEFAULT_LEARNING_STEPS = {
+        Duration.ofMinutes(1), Duration.ofMinutes(10)
+    };
+    private static final Duration[] DEFAULT_RELEARNING_STEPS = {Duration.ofMinutes(10)};
     private static final double STABILITY_MIN = 0.001;
     private static final double INITIAL_STABILITY_MAX = 100.0;
     private static final double MIN_DIFFICULTY = 1.0;
     private static final double MAX_DIFFICULTY = 10.0;
-    private final double DECAY;
-    private final double FACTOR;
 
     private double[] parameters;
     private double desiredRetention;
@@ -24,35 +26,68 @@ public class Scheduler {
     private Duration[] relearningSteps;
     private int maximumInterval;
     private boolean enableFuzzing;
+    private final double DECAY;
+    private final double FACTOR;
 
-    public Scheduler(
-            double[] parameters,
-            double desiredRetention,
-            Duration[] learningSteps,
-            Duration[] relearningSteps,
-            int maximumInterval,
-            boolean enableFuzzing) {
+    private Scheduler(Builder builder) {
 
-        this.parameters = parameters;
-        this.desiredRetention = desiredRetention;
-        this.learningSteps = learningSteps;
-        this.relearningSteps = relearningSteps;
-        this.maximumInterval = maximumInterval;
-        this.enableFuzzing = enableFuzzing;
+        this.parameters = builder.parameters;
+        this.desiredRetention = builder.desiredRetention;
+        this.learningSteps = builder.learningSteps;
+        this.relearningSteps = builder.relearningSteps;
+        this.maximumInterval = builder.maximumInterval;
+        this.enableFuzzing = builder.enableFuzzing;
 
         this.DECAY = -this.parameters[20];
         this.FACTOR = Math.pow(0.9, 1.0 / this.DECAY) - 1;
     }
 
-    public Scheduler() {
+    public static Scheduler defaultScheduler() {
+        return new Builder().build();
+    }
 
-        this(
-                DEFAULT_PARAMETERS,
-                0.9,
-                new Duration[] {Duration.ofMinutes(1), Duration.ofMinutes(10)},
-                new Duration[] {Duration.ofMinutes(10)},
-                36500,
-                true);
+    public static class Builder {
+
+        private double[] parameters = DEFAULT_PARAMETERS;
+        private double desiredRetention = 0.9;
+        private Duration[] learningSteps = DEFAULT_LEARNING_STEPS;
+        private Duration[] relearningSteps = DEFAULT_RELEARNING_STEPS;
+        private int maximumInterval = 36500;
+        private boolean enableFuzzing = true;
+
+        public Builder setParameters(double[] parameters) {
+            this.parameters = parameters;
+            return this;
+        }
+
+        public Builder setDesiredRetention(double desiredRetention) {
+            this.desiredRetention = desiredRetention;
+            return this;
+        }
+
+        public Builder setLearningSteps(Duration[] learningSteps) {
+            this.learningSteps = learningSteps;
+            return this;
+        }
+
+        public Builder setRelearningSteps(Duration[] relearningSteps) {
+            this.relearningSteps = relearningSteps;
+            return this;
+        }
+
+        public Builder setMaximumInterval(int maximumInterval) {
+            this.maximumInterval = maximumInterval;
+            return this;
+        }
+
+        public Builder setEnableFuzzing(boolean enableFuzzing) {
+            this.enableFuzzing = enableFuzzing;
+            return this;
+        }
+
+        public Scheduler build() {
+            return new Scheduler(this);
+        }
     }
 
     public double getCardRetrievability(Card card, Instant currentDatetime) {
