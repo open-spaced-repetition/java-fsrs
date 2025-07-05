@@ -12,7 +12,7 @@ public class FSRSTest {
     @Test
     public void testReviewDefaultArg() {
 
-        Scheduler scheduler = new Scheduler();
+        Scheduler scheduler = Scheduler.defaultScheduler();
 
         Card card = new Card();
 
