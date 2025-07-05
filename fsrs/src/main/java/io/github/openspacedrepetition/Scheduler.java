@@ -99,6 +99,18 @@ public class Scheduler {
 
     }
 
+    private double shortTermStability(double stability, Rating rating) {
+        // TODO: 
+    }
+
+    private double nextDifficulty(double difficulty, Rating rating) {
+        // TODO:
+    }
+
+    private double nextStability(double difficulty, double stability, double retrievability, Rating rating) {
+        // TODO:
+    }
+
     public CardAndReviewLog reviewCard(Card card, Rating rating, Instant reviewDatetime, Integer reviewDuration) {
 
         card = new Card(card);
@@ -133,13 +145,25 @@ public class Scheduler {
 
                 } else if (daysSinceLastReview != null && daysSinceLastReview < 1) {
 
-                    // TODO:
+                    double shortTermStability = shortTermStability(cardStability, rating);
+                    double nextDifficulty = nextDifficulty(cardDifficulty, rating);
+
+                    card.setStability(shortTermStability);
+                    card.setDifficulty(nextDifficulty);
 
                 } else {
 
-                    // TODO:
+                    double retrievability = getCardRetrievability(card, reviewDatetime);
 
+                    double nextStability = nextStability(cardDifficulty, cardStability, retrievability, rating);
+                    double nextDifficulty = nextDifficulty(cardDifficulty, rating);
+
+                    card.setStability(nextStability);
+                    card.setDifficulty(nextDifficulty);
+                    
                 }
+
+                // TODO: Complete rest of case where interval is calculated and Card state is updated
 
             }
             case REVIEW -> {
