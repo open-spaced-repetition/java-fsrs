@@ -70,43 +70,43 @@ public class Scheduler {
     private double clampStability(double stability) {
 
         return Math.max(stability, STABILITY_MIN);
-
     }
 
     private double initialStability(Rating rating) {
 
-        double initialStability = this.parameters[rating.getValue()-1];
+        double initialStability = this.parameters[rating.getValue() - 1];
 
         initialStability = clampStability(initialStability);
 
         return initialStability;
-
     }
 
     private double clampDifficulty(double difficulty) {
 
         return Math.min(Math.max(difficulty, MIN_DIFFICULTY), MAX_DIFFICULTY);
-
     }
 
     private double initialDifficulty(Rating rating) {
 
-        double initialDifficulty = this.parameters[4] - Math.pow(Math.E, (this.parameters[5] * (rating.getValue() - 1))) + 1;
+        double initialDifficulty =
+                this.parameters[4]
+                        - Math.pow(Math.E, (this.parameters[5] * (rating.getValue() - 1)))
+                        + 1;
 
         initialDifficulty = clampDifficulty(initialDifficulty);
 
         return initialDifficulty;
-
     }
 
     private double shortTermStability(double stability, Rating rating) {
 
-        double shortTermStabilityIncrease = Math.exp(this.parameters[17] * (rating.getValue() - 3 + this.parameters[18])) * Math.pow(stability, -this.parameters[19]);
+        double shortTermStabilityIncrease =
+                Math.exp(this.parameters[17] * (rating.getValue() - 3 + this.parameters[18]))
+                        * Math.pow(stability, -this.parameters[19]);
 
         if (rating == Rating.GOOD || rating == Rating.EASY) {
 
             shortTermStabilityIncrease = Math.max(shortTermStabilityIncrease, 1.0);
-
         }
 
         double shortTermStability = stability * shortTermStabilityIncrease;
@@ -114,19 +114,16 @@ public class Scheduler {
         shortTermStability = clampStability(shortTermStability);
 
         return shortTermStability;
-
     }
 
     private double linearDamping(double deltaDifficulty, double difficulty) {
 
         return (10.0 - difficulty) * deltaDifficulty / 9.0;
-
     }
 
     private double meanReversion(double arg1, double arg2) {
 
         return this.parameters[7] * arg1 + (1 - this.parameters[7]) * arg2;
-
     }
 
     private double nextDifficulty(double difficulty, Rating rating) {
@@ -142,30 +139,41 @@ public class Scheduler {
         nextDifficulty = clampDifficulty(nextDifficulty);
 
         return nextDifficulty;
-
     }
 
     private double nextForgetStability(double difficulty, double stability, double retrievability) {
 
-        double nextForgetStabilityLongTermParams = this.parameters[11] * (Math.pow(difficulty, -this.parameters[12])) * (Math.pow(stability+1, this.parameters[13]) - 1) * Math.exp((1 - retrievability) * this.parameters[14]);
+        double nextForgetStabilityLongTermParams =
+                this.parameters[11]
+                        * (Math.pow(difficulty, -this.parameters[12]))
+                        * (Math.pow(stability + 1, this.parameters[13]) - 1)
+                        * Math.exp((1 - retrievability) * this.parameters[14]);
 
-        double nextForgetStabilityShortTermParams = stability / Math.exp(this.parameters[17] * this.parameters[18]);
+        double nextForgetStabilityShortTermParams =
+                stability / Math.exp(this.parameters[17] * this.parameters[18]);
 
         return Math.min(nextForgetStabilityLongTermParams, nextForgetStabilityShortTermParams);
-
     }
 
-    private double nextRecallStability(double difficulty, double stability, double retrievability, Rating rating) {
+    private double nextRecallStability(
+            double difficulty, double stability, double retrievability, Rating rating) {
 
         double hardPenalty = (rating == Rating.HARD) ? this.parameters[15] : 1;
 
         double easyBonus = (rating == Rating.EASY) ? this.parameters[16] : 1;
 
-        return stability * (1 + Math.exp(this.parameters[8]) * (11-difficulty) * Math.pow(stability, -this.parameters[9]) * (Math.exp((1-retrievability)*this.parameters[10]) - 1) * hardPenalty * easyBonus);
-
+        return stability
+                * (1
+                        + Math.exp(this.parameters[8])
+                                * (11 - difficulty)
+                                * Math.pow(stability, -this.parameters[9])
+                                * (Math.exp((1 - retrievability) * this.parameters[10]) - 1)
+                                * hardPenalty
+                                * easyBonus);
     }
 
-    private double nextStability(double difficulty, double stability, double retrievability, Rating rating) {
+    private double nextStability(
+            double difficulty, double stability, double retrievability, Rating rating) {
 
         double nextStability;
 
@@ -176,16 +184,32 @@ public class Scheduler {
         } else { // HARD || GOOD || EASY
 
             nextStability = nextRecallStability(difficulty, stability, retrievability, rating);
-
         }
 
         nextStability = clampStability(nextStability);
 
         return nextStability;
-
     }
 
-    public CardAndReviewLog reviewCard(Card card, Rating rating, Instant reviewDatetime, Integer reviewDuration) {
+    private int nextInterval(double stability) {
+
+        int nextInterval =
+                (int)
+                        Math.round(
+                                (stability / this.FACTOR)
+                                        * (Math.pow(this.desiredRetention, (1 / this.DECAY)) - 1));
+
+        // must be at least 1 day long
+        nextInterval = Math.max(nextInterval, 1);
+
+        // cannot be longer than the maximum interval
+        nextInterval = Math.min(nextInterval, this.maximumInterval);
+
+        return nextInterval;
+    }
+
+    public CardAndReviewLog reviewCard(
+            Card card, Rating rating, Instant reviewDatetime, Integer reviewDuration) {
 
         card = new Card(card);
         State cardState = card.getState();
@@ -195,9 +219,11 @@ public class Scheduler {
         if (reviewDatetime == null) {
             reviewDatetime = Instant.now();
         }
-        
+
         Instant cardLastReview = card.getLastReview();
         Integer daysSinceLastReview;
+
+        Duration nextInterval = Duration.ofMillis(0); // this is just a temporary initialization
 
         if (cardLastReview == null) {
             daysSinceLastReview = null;
@@ -206,9 +232,7 @@ public class Scheduler {
         }
 
         switch (cardState) {
-
             case LEARNING -> {
-                
                 if (cardStability == null && cardDifficulty == null) {
 
                     double initialStability = initialStability(rating);
@@ -229,16 +253,91 @@ public class Scheduler {
 
                     double retrievability = getCardRetrievability(card, reviewDatetime);
 
-                    double nextStability = nextStability(cardDifficulty, cardStability, retrievability, rating);
+                    double nextStability =
+                            nextStability(cardDifficulty, cardStability, retrievability, rating);
                     double nextDifficulty = nextDifficulty(cardDifficulty, rating);
 
                     card.setStability(nextStability);
                     card.setDifficulty(nextDifficulty);
-                    
                 }
 
-                // TODO: Complete rest of case where interval is calculated and Card state is updated
+                /*
+                calculate the card's next interval
+                first if-clause handles edge case where the Card in the Learning state was previously
+                scheduled with a Scheduler with more learning_steps than the current Scheduler
+                */
+                Integer cardStep = card.getStep();
+                int nextIntervalDays;
+                if (this.learningSteps.length == 0
+                        || (cardStep >= this.learningSteps.length
+                                && (rating == Rating.HARD
+                                        || rating == Rating.GOOD
+                                        || rating == Rating.EASY))) {
 
+                    card.setState(State.REVIEW);
+                    card.setStep(null);
+
+                    nextIntervalDays = nextInterval(card.getStability());
+                    nextInterval = Duration.ofDays((long) nextIntervalDays);
+
+                } else {
+
+                    switch (rating) {
+                        case AGAIN -> {
+                            card.setStep(0);
+                            nextInterval = this.learningSteps[card.getStep()];
+                        }
+                        case HARD -> {
+
+                            // card step stays the same
+
+                            if (card.getStep() == 0 && this.learningSteps.length == 1) {
+
+                                nextInterval =
+                                        Duration.ofMillis(
+                                                Math.round(this.learningSteps[0].toMillis() * 1.5));
+
+                            } else if (card.getStep() == 0 && this.learningSteps.length >= 2) {
+
+                                nextInterval =
+                                        Duration.ofMillis(
+                                                Math.round(
+                                                        (this.learningSteps[0].toMillis()
+                                                                        + this.learningSteps[1]
+                                                                                .toMillis())
+                                                                / 2.0));
+
+                            } else {
+
+                                nextInterval = this.learningSteps[card.getStep()];
+                            }
+                        }
+                        case GOOD -> {
+                            if (card.getStep() + 1 == this.learningSteps.length) {
+
+                                // the last step
+
+                                card.setState(State.REVIEW);
+                                card.setStep(null);
+
+                                nextIntervalDays = nextInterval(card.getStability());
+                                nextInterval = Duration.ofDays((long) nextIntervalDays);
+
+                            } else {
+
+                                card.setStep(card.getStep() + 1);
+                                nextInterval = this.learningSteps[card.getStep()];
+                            }
+                        }
+                        case EASY -> {
+                            card.setState(State.REVIEW);
+                            card.setStep(null);
+
+                            nextIntervalDays = nextInterval(card.getStability());
+                            nextInterval = Duration.ofDays((long) nextIntervalDays);
+                        }
+                    }
+                }
             }
             case REVIEW -> {
 
@@ -250,9 +349,20 @@ public class Scheduler {
                 // TODO:
 
             }
+        }
+
+        if (this.enableFuzzing == true && card.getState() == State.REVIEW) {
+
+            // TODO:
 
         }
 
-        return new CardAndReviewLog();
+        card.setDue(reviewDatetime.plus(nextInterval));
+        card.setLastReview(reviewDatetime);
+
+        ReviewLog reviewLog =
+                new ReviewLog(card.getCardId(), rating, reviewDatetime, reviewDuration);
+
+        return new CardAndReviewLog(card, reviewLog);
     }
 }
