@@ -145,8 +145,44 @@ public class Scheduler {
 
     }
 
+    private double nextForgetStability(double difficulty, double stability, double retrievability) {
+
+        double nextForgetStabilityLongTermParams = this.parameters[11] * (Math.pow(difficulty, -this.parameters[12])) * (Math.pow(stability+1, this.parameters[13]) - 1) * Math.exp((1 - retrievability) * this.parameters[14]);
+
+        double nextForgetStabilityShortTermParams = stability / Math.exp(this.parameters[17] * this.parameters[18]);
+
+        return Math.min(nextForgetStabilityLongTermParams, nextForgetStabilityShortTermParams);
+
+    }
+
+    private double nextRecallStability(double difficulty, double stability, double retrievability, Rating rating) {
+
+        double hardPenalty = (rating == Rating.HARD) ? this.parameters[15] : 1;
+
+        double easyBonus = (rating == Rating.EASY) ? this.parameters[16] : 1;
+
+        return stability * (1 + Math.exp(this.parameters[8]) * (11-difficulty) * Math.pow(stability, -this.parameters[9]) * (Math.exp((1-retrievability)*this.parameters[10]) - 1) * hardPenalty * easyBonus);
+
+    }
+
     private double nextStability(double difficulty, double stability, double retrievability, Rating rating) {
-        // TODO:
+
+        double nextStability;
+
+        if (rating == Rating.AGAIN) {
+
+            nextStability = nextForgetStability(difficulty, stability, retrievability);
+
+        } else { // HARD || GOOD || EASY
+
+            nextStability = nextRecallStability(difficulty, stability, retrievability, rating);
+
+        }
+
+        nextStability = clampStability(nextStability);
+
+        return nextStability;
+
     }
 
     public CardAndReviewLog reviewCard(Card card, Rating rating, Instant reviewDatetime, Integer reviewDuration) {
