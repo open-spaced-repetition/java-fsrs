@@ -25,9 +25,9 @@ public class ReviewLog {
     private int cardId;
     private Rating rating;
     private Instant reviewDatetime;
-    private int reviewDuration;
+    private Integer reviewDuration;
 
-    public ReviewLog(int cardId, Rating rating, Instant reviewDatetime, int reviewDuration) {
+    public ReviewLog(int cardId, Rating rating, Instant reviewDatetime, Integer reviewDuration) {
 
         this.cardId = cardId;
         this.rating = rating;
