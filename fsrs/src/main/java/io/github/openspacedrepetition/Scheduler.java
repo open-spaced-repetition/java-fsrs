@@ -33,11 +33,7 @@ public class Scheduler {
             int maximumInterval,
             boolean enableFuzzing) {
 
-        if (parameters == null) {
-            parameters = DEFAULT_PARAMETERS;
-        }
         this.parameters = parameters;
-
         this.desiredRetention = desiredRetention;
         this.learningSteps = learningSteps;
         this.relearningSteps = relearningSteps;
