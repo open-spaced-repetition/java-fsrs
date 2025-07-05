@@ -376,7 +376,5 @@ public class Scheduler {
     public CardAndReviewLog reviewCard(Card card, Rating rating) {
 
         return reviewCard(card, rating, null, null);
-
     }
-
 }

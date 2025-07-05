@@ -1,11 +1,10 @@
 /* (C)2025 */
 package io.github.openspacedrepetition;
 
-import java.time.Instant;
-import java.time.Duration;
-
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.Duration;
+import java.time.Instant;
 import org.junit.jupiter.api.*;
 
 public class FSRSTest {
@@ -28,6 +27,5 @@ public class FSRSTest {
         int timeDeltaSeconds = (int) timeDelta.toSeconds();
 
         assertTrue(timeDeltaSeconds > 500); // due in approx. 8-10 minutes
-
     }
 }
