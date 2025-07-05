@@ -117,8 +117,32 @@ public class Scheduler {
 
     }
 
+    private double linearDamping(double deltaDifficulty, double difficulty) {
+
+        return (10.0 - difficulty) * deltaDifficulty / 9.0;
+
+    }
+
+    private double meanReversion(double arg1, double arg2) {
+
+        return this.parameters[7] * arg1 + (1 - this.parameters[7]) * arg2;
+
+    }
+
     private double nextDifficulty(double difficulty, Rating rating) {
-        // TODO:
+
+        double arg1 = initialDifficulty(Rating.EASY);
+
+        double deltaDifficulty = -(this.parameters[6] * (rating.getValue() - 3));
+
+        double arg2 = difficulty + linearDamping(deltaDifficulty, difficulty);
+
+        double nextDifficulty = meanReversion(arg1, arg2);
+
+        nextDifficulty = clampDifficulty(nextDifficulty);
+
+        return nextDifficulty;
+
     }
 
     private double nextStability(double difficulty, double stability, double retrievability, Rating rating) {
