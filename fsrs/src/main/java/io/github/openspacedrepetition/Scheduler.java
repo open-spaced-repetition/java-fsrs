@@ -431,7 +431,111 @@ public class Scheduler {
             }
             case RELEARNING -> {
 
-                // TODO:
+                // update the card's stability and difficulty
+                if (daysSinceLastReview != null && daysSinceLastReview < 1) {
+
+                    double shortTermStability = shortTermStability(card.getStability(), rating);
+
+                    card.setStability(shortTermStability);
+                } else {
+
+                    double nextStability =
+                            nextStability(
+                                    card.getDifficulty(),
+                                    card.getStability(),
+                                    getCardRetrievability(card, reviewDatetime),
+                                    rating);
+
+                    card.setStability(nextStability);
+
+                }
+
+                double nextDifficulty = nextDifficulty(card.getDifficulty(), rating);
+                card.setDifficulty(nextDifficulty);
+
+                /*
+                calculate the card's next interval
+                first if-clause handles edge case where the Card in the Relearning state was previously
+                scheduled with a Scheduler with more relearning_steps than the current Scheduler
+                */
+                int nextIntervalDays;
+                if (this.relearningSteps.length == 0 || (card.getStep() >= this.relearningSteps.length && (rating == Rating.HARD || rating == Rating.GOOD || rating == Rating.EASY))) {
+
+                    card.setState(State.REVIEW);
+                    card.setStep(null);
+
+                    nextIntervalDays = nextInterval(card.getStability());
+                    nextInterval = Duration.ofDays(nextIntervalDays);
+
+                } else {
+
+                    switch (rating) {
+
+                        case AGAIN -> {
+
+                            card.setStep(0);
+                            nextInterval = this.relearningSteps[card.getStep()];
+
+                        }
+                        case HARD -> {
+                            // card step stays the same
+
+                            if (card.getStep() == 0 && this.relearningSteps.length == 1) {
+
+                                nextInterval =
+                                        Duration.ofMillis(
+                                                Math.round(this.learningSteps[0].toMillis() * 1.5));
+
+                            } else if (card.getStep() == 0 && this.relearningSteps.length >= 2) {
+
+                                nextInterval =
+                                        Duration.ofMillis(
+                                                Math.round(
+                                                        (this.learningSteps[0].toMillis()
+                                                                        + this.learningSteps[1]
+                                                                                .toMillis())
+                                                                / 2.0)); 
+
+                            } else {
+
+                                nextInterval = this.relearningSteps[card.getStep()];
+
+                            }
+                            
+
+                        }
+                        case GOOD -> {
+
+                            if (card.getStep() + 1 == this.relearningSteps.length) {
+
+                                card.setState(State.REVIEW);
+                                card.setStep(null);
+
+                                nextIntervalDays = nextInterval(card.getStability());
+                                nextInterval = Duration.ofDays(nextIntervalDays);
+
+                            } else {
+
+                                card.setStep(card.getStep()+1);
+                                nextInterval = this.relearningSteps[card.getStep()];
+
+                            }
+
+                        }
+                        case EASY -> {
+
+                            card.setState(State.REVIEW);
+                            card.setStep(null);
+
+                            nextIntervalDays = nextInterval(card.getStability());
+                            nextInterval = Duration.ofDays(nextIntervalDays);
+
+                        }
+
+                    }
+
+
+                }
 
             }
         }
