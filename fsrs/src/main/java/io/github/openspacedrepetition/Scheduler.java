@@ -4,6 +4,7 @@ package io.github.openspacedrepetition;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Random;
 
 public class Scheduler {
 
@@ -20,12 +21,21 @@ public class Scheduler {
     private static final double MIN_DIFFICULTY = 1.0;
     private static final double MAX_DIFFICULTY = 10.0;
 
+    private static record FuzzRange(double start, double end, double factor) {}
+
+    private static final FuzzRange[] FUZZ_RANGES = {
+        new FuzzRange(2.5, 7.0, 0.15),
+        new FuzzRange(7.0, 20.0, 0.1),
+        new FuzzRange(20.0, Double.POSITIVE_INFINITY, 0.05),
+    };
+
     private double[] parameters;
     private double desiredRetention;
     private Duration[] learningSteps;
     private Duration[] relearningSteps;
     private int maximumInterval;
     private boolean enableFuzzing;
+    private Random randomSeed;
     private final double DECAY;
     private final double FACTOR;
 
@@ -37,6 +47,7 @@ public class Scheduler {
         this.relearningSteps = builder.relearningSteps;
         this.maximumInterval = builder.maximumInterval;
         this.enableFuzzing = builder.enableFuzzing;
+        this.randomSeed = builder.randomSeed;
 
         this.DECAY = -this.parameters[20];
         this.FACTOR = Math.pow(0.9, 1.0 / this.DECAY) - 1;
@@ -58,6 +69,7 @@ public class Scheduler {
         private Duration[] relearningSteps = DEFAULT_RELEARNING_STEPS;
         private int maximumInterval = 36500;
         private boolean enableFuzzing = true;
+        private Random randomSeed = new Random(42);
 
         public Builder setParameters(double[] parameters) {
             this.parameters = parameters;
@@ -86,6 +98,11 @@ public class Scheduler {
 
         public Builder setEnableFuzzing(boolean enableFuzzing) {
             this.enableFuzzing = enableFuzzing;
+            return this;
+        }
+
+        public Builder setRandomSeed(Random randomSeed) {
+            this.randomSeed = randomSeed;
             return this;
         }
 
@@ -249,6 +266,55 @@ public class Scheduler {
         nextInterval = Math.min(nextInterval, this.maximumInterval);
 
         return nextInterval;
+    }
+
+    private int[] getFuzzRange(int intervalDays) {
+
+        double delta = 1.0;
+        for (FuzzRange fuzzRange : FUZZ_RANGES) {
+
+            delta +=
+                    fuzzRange.factor()
+                            * Math.max(
+                                    Math.min(intervalDays, fuzzRange.end() - fuzzRange.start()),
+                                    0.0);
+        }
+
+        int minIvl = (int) Math.round(intervalDays - delta);
+        int maxIvl = (int) Math.round(intervalDays + delta);
+
+        // make sure the minIvl and maxIvl fall into a valid range
+        minIvl = Math.max(2, minIvl);
+        maxIvl = Math.min(maxIvl, this.maximumInterval);
+        minIvl = Math.min(minIvl, maxIvl);
+
+        int[] ivlBounds = {minIvl, maxIvl};
+
+        return ivlBounds;
+    }
+
+    private Duration getFuzzedInterval(Duration interval) {
+
+        int intervalDays = (int) interval.toDays();
+
+        if (intervalDays < 2.5) {
+            return interval;
+        }
+
+        int[] ivlBounds = getFuzzRange(intervalDays);
+
+        int minIvl = ivlBounds[0];
+        int maxIvl = ivlBounds[1];
+
+        double fuzzedIntervalDaysDouble =
+                (randomSeed.nextDouble() * (maxIvl - minIvl + 1)) + minIvl;
+
+        int fuzzedIntervalDays =
+                Math.min((int) Math.round(fuzzedIntervalDaysDouble), this.maximumInterval);
+
+        Duration fuzzedInterval = Duration.ofDays(fuzzedIntervalDays);
+
+        return fuzzedInterval;
     }
 
     public CardAndReviewLog reviewCard(
@@ -530,8 +596,7 @@ public class Scheduler {
 
         if (this.enableFuzzing == true && card.getState() == State.REVIEW) {
 
-            // TODO:
-
+            nextInterval = getFuzzedInterval(nextInterval);
         }
 
         card.setDue(reviewDatetime.plus(nextInterval));
