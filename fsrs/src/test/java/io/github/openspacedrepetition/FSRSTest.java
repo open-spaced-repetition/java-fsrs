@@ -28,4 +28,42 @@ public class FSRSTest {
 
         assertTrue(timeDeltaSeconds > 500); // due in approx. 8-10 minutes
     }
+
+    @Test
+    public void testMaximumInterval() {
+
+        int maximumInterval = 100;
+
+        Scheduler scheduler = new Scheduler.Builder().setMaximumInterval(maximumInterval).build();
+
+        Card card = new Card();
+
+        CardAndReviewLog result = scheduler.reviewCard(card, Rating.EASY, card.getDue());
+        card = result.card();
+
+        assertTrue(
+                Duration.between(card.getLastReview(), card.getDue()).toDays()
+                        <= scheduler.getMaximumInterval());
+
+        result = scheduler.reviewCard(card, Rating.GOOD, card.getDue());
+        card = result.card();
+
+        assertTrue(
+                Duration.between(card.getLastReview(), card.getDue()).toDays()
+                        <= scheduler.getMaximumInterval());
+
+        result = scheduler.reviewCard(card, Rating.EASY, card.getDue());
+        card = result.card();
+
+        assertTrue(
+                Duration.between(card.getLastReview(), card.getDue()).toDays()
+                        <= scheduler.getMaximumInterval());
+
+        result = scheduler.reviewCard(card, Rating.GOOD, card.getDue());
+        card = result.card();
+
+        assertTrue(
+                Duration.between(card.getLastReview(), card.getDue()).toDays()
+                        <= scheduler.getMaximumInterval());
+    }
 }
