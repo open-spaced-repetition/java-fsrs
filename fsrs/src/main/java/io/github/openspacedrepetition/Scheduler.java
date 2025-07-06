@@ -385,8 +385,49 @@ public class Scheduler {
             }
             case REVIEW -> {
 
-                // TODO:
+                // update the card's stability and difficulty
+                if (daysSinceLastReview != null && daysSinceLastReview < 1) {
 
+                    double shortTermStability = shortTermStability(card.getStability(), rating);
+
+                    card.setStability(shortTermStability);
+
+                } else {
+
+                    double nextStability =
+                            nextStability(
+                                    card.getDifficulty(),
+                                    card.getStability(),
+                                    getCardRetrievability(card, reviewDatetime),
+                                    rating);
+
+                    card.setStability(nextStability);
+                }
+
+                double nextDifficulty = nextDifficulty(card.getDifficulty(), rating);
+                card.setDifficulty(nextDifficulty);
+
+                int nextIntervalDays;
+                switch (rating) {
+                    case AGAIN -> {
+                        if (this.learningSteps.length == 0) {
+
+                            nextIntervalDays = nextInterval(card.getStability());
+                            nextInterval = Duration.ofDays(nextIntervalDays);
+
+                        } else {
+
+                            card.setState(State.RELEARNING);
+                            card.setStep(0);
+
+                            nextInterval = this.relearningSteps[card.getStep()];
+                        }
+                    }
+                    case HARD, GOOD, EASY -> {
+                        nextIntervalDays = nextInterval(card.getStability());
+                        nextInterval = Duration.ofDays(nextIntervalDays);
+                    }
+                }
             }
             case RELEARNING -> {
 
