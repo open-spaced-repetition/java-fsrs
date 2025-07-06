@@ -8,6 +8,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import org.junit.jupiter.api.*;
 
 public class FSRSTest {
@@ -107,5 +108,49 @@ public class FSRSTest {
         }
 
         assertEquals(List.of(0, 4, 14, 45, 135, 372, 0, 0, 2, 5, 10, 20, 40), ivlHistory);
+    }
+
+    @Test
+    public void testFuzz() {
+
+        Random randomSeed1 = new Random(42);
+
+        Scheduler scheduler = new Scheduler.Builder().setRandomSeed(randomSeed1).build();
+
+        Card card = new Card();
+
+        CardAndReviewLog result = scheduler.reviewCard(card, Rating.GOOD, Instant.now());
+        card = result.card();
+
+        result = scheduler.reviewCard(card, Rating.GOOD, card.getDue());
+        card = result.card();
+
+        result = scheduler.reviewCard(card, Rating.GOOD, card.getDue());
+        card = result.card();
+
+        Duration interval = Duration.between(card.getLastReview(), card.getDue());
+        int intervalDays = (int) interval.toDays();
+
+        assertEquals(19, intervalDays);
+
+        Random randomSeed2 = new Random(12345);
+
+        scheduler = new Scheduler.Builder().setRandomSeed(randomSeed2).build();
+
+        card = new Card();
+
+        result = scheduler.reviewCard(card, Rating.GOOD, Instant.now());
+        card = result.card();
+
+        result = scheduler.reviewCard(card, Rating.GOOD, card.getDue());
+        card = result.card();
+
+        result = scheduler.reviewCard(card, Rating.GOOD, card.getDue());
+        card = result.card();
+
+        interval = Duration.between(card.getLastReview(), card.getDue());
+        intervalDays = (int) interval.toDays();
+
+        assertEquals(18, intervalDays);
     }
 }
