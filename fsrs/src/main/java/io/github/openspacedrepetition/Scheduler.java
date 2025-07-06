@@ -447,7 +447,6 @@ public class Scheduler {
                                     rating);
 
                     card.setStability(nextStability);
-
                 }
 
                 double nextDifficulty = nextDifficulty(card.getDifficulty(), rating);
@@ -459,7 +458,11 @@ public class Scheduler {
                 scheduled with a Scheduler with more relearning_steps than the current Scheduler
                 */
                 int nextIntervalDays;
-                if (this.relearningSteps.length == 0 || (card.getStep() >= this.relearningSteps.length && (rating == Rating.HARD || rating == Rating.GOOD || rating == Rating.EASY))) {
+                if (this.relearningSteps.length == 0
+                        || (card.getStep() >= this.relearningSteps.length
+                                && (rating == Rating.HARD
+                                        || rating == Rating.GOOD
+                                        || rating == Rating.EASY))) {
 
                     card.setState(State.REVIEW);
                     card.setStep(null);
@@ -470,12 +473,9 @@ public class Scheduler {
                 } else {
 
                     switch (rating) {
-
                         case AGAIN -> {
-
                             card.setStep(0);
                             nextInterval = this.relearningSteps[card.getStep()];
-
                         }
                         case HARD -> {
                             // card step stays the same
@@ -494,18 +494,14 @@ public class Scheduler {
                                                         (this.learningSteps[0].toMillis()
                                                                         + this.learningSteps[1]
                                                                                 .toMillis())
-                                                                / 2.0)); 
+                                                                / 2.0));
 
                             } else {
 
                                 nextInterval = this.relearningSteps[card.getStep()];
-
                             }
-                            
-
                         }
                         case GOOD -> {
-
                             if (card.getStep() + 1 == this.relearningSteps.length) {
 
                                 card.setState(State.REVIEW);
@@ -516,27 +512,19 @@ public class Scheduler {
 
                             } else {
 
-                                card.setStep(card.getStep()+1);
+                                card.setStep(card.getStep() + 1);
                                 nextInterval = this.relearningSteps[card.getStep()];
-
                             }
-
                         }
                         case EASY -> {
-
                             card.setState(State.REVIEW);
                             card.setStep(null);
 
                             nextIntervalDays = nextInterval(card.getStability());
                             nextInterval = Duration.ofDays(nextIntervalDays);
-
                         }
-
                     }
-
-
                 }
-
             }
         }
 
