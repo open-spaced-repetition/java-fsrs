@@ -3,7 +3,6 @@
 ### Install library locally
 
 ```bash
-cd fsrs/
 mvn clean install
 ```
 
