@@ -11,8 +11,7 @@
 </div>
 <br />
 <div align="center" style="text-decoration: none;">
-    <a href="https://central.sonatype.com/artifact/io.github.open-spaced-repetition/fsrs"><img src="https://img.shields.io/maven-central/v/io.github.open-spaced-repetition/fsrs
-    "></a>
+    <a href="https://central.sonatype.com/artifact/io.github.open-spaced-repetition/fsrs"><img src="https://img.shields.io/maven-central/v/io.github.open-spaced-repetition/fsrs"></a>
     <a href="https://central.sonatype.com/artifact/io.github.open-spaced-repetition/fsrs"><img src="https://img.shields.io/badge/Java-17-blue.svg"></a>
     <a href="https://github.com/open-spaced-repetition/java-fsrs/blob/main/LICENSE" style="text-decoration: none;"><img src="https://img.shields.io/badge/License-MIT-brightgreen.svg"></a>
 </div>
