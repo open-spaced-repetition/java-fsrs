@@ -37,6 +37,15 @@ You can install the `fsrs` Java library from [Maven Central](https://central.son
 ## Quickstart
 
 ```java
+import io.github.openspacedrepetition.Scheduler;
+import io.github.openspacedrepetition.Card;
+import io.github.openspacedrepetition.Rating;
+import io.github.openspacedrepetition.CardAndReviewLog;
+import io.github.openspacedrepetition.ReviewLog;
+
+import java.time.Instant;
+import java.time.Duration;
+
 public class SRS {
 
     public static void main(String[] args) {
