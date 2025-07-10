@@ -17,4 +17,20 @@ public class ReviewLog {
         this.reviewDatetime = reviewDatetime;
         this.reviewDuration = reviewDuration;
     }
+
+    public int getCardId() {
+        return this.cardId;
+    }
+
+    public Rating getRating() {
+        return this.rating;
+    }
+
+    public Instant getReviewDateTime() {
+        return this.reviewDatetime;
+    }
+
+    public Integer getReviewDuration() {
+        return this.reviewDuration;
+    }
 }
