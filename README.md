@@ -65,6 +65,11 @@ public class SRS {
 
         CardAndReviewLog result = scheduler.reviewCard(card, rating);
         card = result.card();
+        ReviewLog reviewLog = result.reviewLog();
+
+        System.out.println(
+                "Card rated " + reviewLog.getRating() + " at " + reviewLog.getReviewDateTime());
+        // > Card rated GOOD at 2025-07-10T04:16:19.637219Z
 
         // when the card is due next for review
         Instant due = card.getDue();
@@ -74,7 +79,7 @@ public class SRS {
 
         System.out.println("Card due on: " + due);
         System.out.println("Card due in " + timeDelta.toSeconds() + " seconds");
-        // > Card due on: 2025-07-09T04:19:16.535922Z
+        // > Card due on: 2025-07-10T04:26:19.637219Z
         // > Card due in 599 seconds
 
     }
