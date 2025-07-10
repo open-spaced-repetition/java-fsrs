@@ -85,32 +85,4 @@ public class SRS {
     }
 
 }
-
-Scheduler scheduler = Scheduler.defaultScheduler();
-
-// note: all new cards are 'due' immediately upon creation
-Card card = new Card();
-
-// Choose a rating and review the card with the scheduler
-/*
-    * Rating.AGAIN (==1) forgot the card
-    * Rating.HARD (==2) remembered the card with serious difficulty
-    * Rating.GOOD (==3) remembered the card after a hesitation
-    * Rating.EASY (==4) remembered the card easily
-*/
-Rating rating = Rating.GOOD;
-
-CardAndReviewLog result = scheduler.reviewCard(card, rating);
-card = result.card();
-
-// when the card is due next for review
-Instant due = card.getDue();
-
-// how much time between now and when the card is due
-Duration timeDelta = Duration.between(Instant.now(), due);
-
-System.out.println("Card due on: " + due);
-System.out.println("Card due in " + timeDelta.toSeconds() + " seconds");
-// > Card due on: 2025-07-09T04:19:16.535922Z
-// > Card due in 599 seconds
 ```
