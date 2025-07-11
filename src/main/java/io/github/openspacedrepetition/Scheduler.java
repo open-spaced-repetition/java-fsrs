@@ -17,7 +17,6 @@ public class Scheduler {
     };
     private static final Duration[] DEFAULT_RELEARNING_STEPS = {Duration.ofMinutes(10)};
     private static final double STABILITY_MIN = 0.001;
-    private static final double INITIAL_STABILITY_MAX = 100.0;
     private static final double MIN_DIFFICULTY = 1.0;
     private static final double MAX_DIFFICULTY = 10.0;
 
