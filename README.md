@@ -22,6 +22,7 @@
 ## Table of Contents
 - [Installation](#installation)
 - [Quickstart](#quickstart)
+- [Versioning](#versioning)
 
 ## Installation
 You can install the `fsrs` Java library from [Maven Central](https://central.sonatype.com/artifact/io.github.open-spaced-repetition/fsrs) using Maven:
@@ -86,3 +87,12 @@ public class SRS {
 
 }
 ```
+
+## Versioning
+
+This Java library is currently unstable and adheres to the following versioning scheme:
+
+- `MINOR` version number will increase when a backward-incompatible change is introduced
+- `PATCH` version number will increase when a bug is fixed, a new feature is added or when anything else warrants a new release
+
+Once this package is considered stable, the `MAJOR` version number will be bumped to `1.0.0` and will then follow [semver](https://semver.org/).
