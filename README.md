@@ -96,3 +96,7 @@ This Java library is currently unstable and adheres to the following versioning 
 - `PATCH` version number will increase when a bug is fixed, a new feature is added or when anything else warrants a new release
 
 Once this package is considered stable, the `MAJOR` version number will be bumped to `1.0.0` and will then follow [semver](https://semver.org/).
+
+## Other FSRS implementations
+
+You can find various other FSRS implementations and projects [here](https://github.com/orgs/open-spaced-repetition/repositories?q=fsrs+sort%3Astars).
