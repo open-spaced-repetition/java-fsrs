@@ -29,7 +29,7 @@ You can install the `fsrs` Java library from [Maven Central](https://central.son
 <dependency>
     <groupId>io.github.open-spaced-repetition</groupId>
     <artifactId>fsrs</artifactId>
-    <version>0.1.1</version>
+    <version>0.1.2</version>
 </dependency>
 ```
 
