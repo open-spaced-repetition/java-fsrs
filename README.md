@@ -24,6 +24,7 @@
 - [Quickstart](#quickstart)
 - [Versioning](#versioning)
 - [Other FSRS implementations](#other-fsrs-implementations)
+- [Contribute](#contribute)
 
 ## Installation
 You can install the `fsrs` Java library from [Maven Central](https://central.sonatype.com/artifact/io.github.open-spaced-repetition/fsrs) using Maven:
@@ -101,3 +102,7 @@ Once this package is considered stable, the `MAJOR` version number will be bumpe
 ## Other FSRS implementations
 
 You can find various other FSRS implementations and projects [here](https://github.com/orgs/open-spaced-repetition/repositories?q=fsrs+sort%3Astars).
+
+## Contribute
+
+If you encounter issues with `java-fsrs` or would like to contribute code, please see [CONTRIBUTING](CONTRIBUTING.md).
