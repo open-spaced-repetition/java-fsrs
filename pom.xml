@@ -6,7 +6,7 @@
   <groupId>io.github.open-spaced-repetition</groupId>
   <artifactId>fsrs</artifactId>
   <packaging>jar</packaging>
-  <version>0.1.2</version>
+  <version>0.2.0</version>
 
   <name>fsrs</name>
   <description>Java library for FSRS Spaced Repetition</description>

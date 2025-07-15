@@ -27,14 +27,7 @@
 - [Contribute](#contribute)
 
 ## Installation
-You can install the `fsrs` Java library from [Maven Central](https://central.sonatype.com/artifact/io.github.open-spaced-repetition/fsrs) using Maven:
-```xml
-<dependency>
-    <groupId>io.github.open-spaced-repetition</groupId>
-    <artifactId>fsrs</artifactId>
-    <version>0.1.2</version>
-</dependency>
-```
+You can install the `fsrs` Java library from [Maven Central](https://central.sonatype.com/artifact/io.github.open-spaced-repetition/fsrs).
 
 ## Quickstart
 
@@ -71,7 +64,7 @@ public class SRS {
         ReviewLog reviewLog = result.reviewLog();
 
         System.out.println(
-                "Card rated " + reviewLog.getRating() + " at " + reviewLog.getReviewDateTime());
+                "Card rated " + reviewLog.rating() + " at " + reviewLog.reviewDateTime());
         // > Card rated GOOD at 2025-07-10T04:16:19.637219Z
 
         // when the card is due next for review
