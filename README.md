@@ -71,7 +71,7 @@ public class SRS {
         ReviewLog reviewLog = result.reviewLog();
 
         System.out.println(
-                "Card rated " + reviewLog.getRating() + " at " + reviewLog.getReviewDateTime());
+                "Card rated " + reviewLog.rating() + " at " + reviewLog.reviewDateTime());
         // > Card rated GOOD at 2025-07-10T04:16:19.637219Z
 
         // when the card is due next for review
