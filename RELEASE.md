@@ -13,24 +13,14 @@ The following instructions assume you've already
 mvn clean install
 ```
 
-## Step 2. Sign these specific files with GPG
-
-```bash
-# change MAJOR.MINOR.PATCH
-gpg -ab target/fsrs-MAJOR.MINOR.PATCH.pom
-gpg -ab target/fsrs-MAJOR.MINOR.PATCH.jar
-gpg -ab target/fsrs-MAJOR.MINOR.PATCH-sources.jar
-gpg -ab target/fsrs-MAJOR.MINOR.PATCH-javadoc.jar
-```
-
 Note that GPG will ask for your password.
 
-## Step 3. Deploy to Maven Central
+## Step 2. Deploy to Maven Central
 
 ```bash
 mvn deploy
 ```
 
-## Step 4. Publish on Maven Central
+## Step 3. Publish on Maven Central
 
 Once your deployment is valideated on the [Deployments page](https://central.sonatype.com/publishing/deployments), press Publish. You will then have to wait ~15 minutes for the Component to be published.
