@@ -1,7 +1,7 @@
 /* (C)2025 */
 package io.github.openspacedrepetition;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -30,7 +30,7 @@ public class FSRSTest {
         Duration timeDelta = Duration.between(Instant.now(), due);
         int timeDeltaSeconds = (int) timeDelta.toSeconds();
 
-        assertTrue(timeDeltaSeconds > 500); // due in approx. 8-10 minutes
+        assertThat(timeDeltaSeconds).isGreaterThan(500); // due in approx. 8-10 minutes
     }
 
     @Test
@@ -45,30 +45,23 @@ public class FSRSTest {
         CardAndReviewLog result = scheduler.reviewCard(card, Rating.EASY, card.getDue());
         card = result.card();
 
-        assertTrue(
-                Duration.between(card.getLastReview(), card.getDue()).toDays()
-                        <= scheduler.getMaximumInterval());
+        assertThat(Duration.between(card.getLastReview(), card.getDue()).toDays())
+                .isLessThanOrEqualTo(scheduler.getMaximumInterval());
 
         result = scheduler.reviewCard(card, Rating.GOOD, card.getDue());
         card = result.card();
-
-        assertTrue(
-                Duration.between(card.getLastReview(), card.getDue()).toDays()
-                        <= scheduler.getMaximumInterval());
+        assertThat(Duration.between(card.getLastReview(), card.getDue()).toDays())
+                .isLessThanOrEqualTo(scheduler.getMaximumInterval());
 
         result = scheduler.reviewCard(card, Rating.EASY, card.getDue());
         card = result.card();
-
-        assertTrue(
-                Duration.between(card.getLastReview(), card.getDue()).toDays()
-                        <= scheduler.getMaximumInterval());
+        assertThat(Duration.between(card.getLastReview(), card.getDue()).toDays())
+                .isLessThanOrEqualTo(scheduler.getMaximumInterval());
 
         result = scheduler.reviewCard(card, Rating.GOOD, card.getDue());
         card = result.card();
-
-        assertTrue(
-                Duration.between(card.getLastReview(), card.getDue()).toDays()
-                        <= scheduler.getMaximumInterval());
+        assertThat(Duration.between(card.getLastReview(), card.getDue()).toDays())
+                .isLessThanOrEqualTo(scheduler.getMaximumInterval());
     }
 
     @Test
@@ -106,8 +99,7 @@ public class FSRSTest {
 
             reviewDatetime = card.getDue();
         }
-
-        assertEquals(List.of(0, 4, 14, 45, 135, 372, 0, 0, 2, 5, 10, 20, 40), ivlHistory);
+        assertThat(ivlHistory).isEqualTo(List.of(0, 4, 14, 45, 135, 372, 0, 0, 2, 5, 10, 20, 40));
     }
 
     @Test
@@ -130,8 +122,7 @@ public class FSRSTest {
 
         Duration interval = Duration.between(card.getLastReview(), card.getDue());
         int intervalDays = (int) interval.toDays();
-
-        assertEquals(19, intervalDays);
+        assertThat(intervalDays).isEqualTo(19);
 
         Random randomSeed2 = new Random(12345);
 
@@ -150,7 +141,6 @@ public class FSRSTest {
 
         interval = Duration.between(card.getLastReview(), card.getDue());
         intervalDays = (int) interval.toDays();
-
-        assertEquals(18, intervalDays);
+        assertThat(intervalDays).isEqualTo(18);
     }
 }
