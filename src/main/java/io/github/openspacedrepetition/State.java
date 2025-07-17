@@ -14,5 +14,4 @@ public enum State {
     State(int value) {
         this.value = value;
     }
-
 }

@@ -1,9 +1,8 @@
 /* (C)2025 */
 package io.github.openspacedrepetition;
 
-import lombok.Getter;
-
 import java.time.Instant;
+import lombok.Getter;
 
 @Getter
 public class Card {
