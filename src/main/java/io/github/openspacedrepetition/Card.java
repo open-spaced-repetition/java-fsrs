@@ -3,11 +3,14 @@ package io.github.openspacedrepetition;
 
 import java.time.Instant;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class Card {
 
     private final int cardId;
+
     private State state;
     private Integer step;
     private Double stability;
@@ -69,27 +72,4 @@ public class Card {
         this.lastReview = otherCard.lastReview;
     }
 
-    public void setState(State state) {
-        this.state = state;
-    }
-
-    public void setStep(Integer step) {
-        this.step = step;
-    }
-
-    public void setStability(double stability) {
-        this.stability = stability;
-    }
-
-    public void setDifficulty(double difficulty) {
-        this.difficulty = difficulty;
-    }
-
-    public void setDue(Instant due) {
-        this.due = due;
-    }
-
-    public void setLastReview(Instant lastReview) {
-        this.lastReview = lastReview;
-    }
 }
