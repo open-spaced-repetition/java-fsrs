@@ -5,7 +5,9 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Random;
+import lombok.Getter;
 
+@Getter
 public class Scheduler {
 
     private static final double[] DEFAULT_PARAMETERS = {
@@ -50,10 +52,6 @@ public class Scheduler {
 
         this.DECAY = -this.parameters[20];
         this.FACTOR = Math.pow(0.9, 1.0 / this.DECAY) - 1;
-    }
-
-    public int getMaximumInterval() {
-        return this.maximumInterval;
     }
 
     public static Scheduler defaultScheduler() {
