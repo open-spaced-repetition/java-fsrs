@@ -5,7 +5,7 @@ import java.time.Instant;
 
 public class Card {
 
-    private int cardId;
+    private final int cardId;
     private State state;
     private Integer step;
     private Double stability;

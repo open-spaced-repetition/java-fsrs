@@ -28,13 +28,13 @@ public class Scheduler {
         new FuzzRange(20.0, Double.POSITIVE_INFINITY, 0.05),
     };
 
-    private double[] parameters;
-    private double desiredRetention;
-    private Duration[] learningSteps;
-    private Duration[] relearningSteps;
-    private int maximumInterval;
-    private boolean enableFuzzing;
-    private Random randomSeed;
+    private final double[] parameters;
+    private final double desiredRetention;
+    private final Duration[] learningSteps;
+    private final Duration[] relearningSteps;
+    private final int maximumInterval;
+    private final boolean enableFuzzing;
+    private final Random randomSeed;
     private final double DECAY;
     private final double FACTOR;
 
@@ -287,9 +287,7 @@ public class Scheduler {
         maxIvl = Math.min(maxIvl, this.maximumInterval);
         minIvl = Math.min(minIvl, maxIvl);
 
-        int[] ivlBounds = {minIvl, maxIvl};
-
-        return ivlBounds;
+        return new int[] {minIvl, maxIvl};
     }
 
     private Duration getFuzzedInterval(Duration interval) {
@@ -311,9 +309,7 @@ public class Scheduler {
         int fuzzedIntervalDays =
                 Math.min((int) Math.round(fuzzedIntervalDaysDouble), this.maximumInterval);
 
-        Duration fuzzedInterval = Duration.ofDays(fuzzedIntervalDays);
-
-        return fuzzedInterval;
+        return Duration.ofDays(fuzzedIntervalDays);
     }
 
     public CardAndReviewLog reviewCard(
@@ -406,7 +402,7 @@ public class Scheduler {
                                         Duration.ofMillis(
                                                 Math.round(this.learningSteps[0].toMillis() * 1.5));
 
-                            } else if (card.getStep() == 0 && this.learningSteps.length >= 2) {
+                            } else if (card.getStep() == 0) {
 
                                 nextInterval =
                                         Duration.ofMillis(
@@ -551,7 +547,7 @@ public class Scheduler {
                                         Duration.ofMillis(
                                                 Math.round(this.learningSteps[0].toMillis() * 1.5));
 
-                            } else if (card.getStep() == 0 && this.relearningSteps.length >= 2) {
+                            } else if (card.getStep() == 0) {
 
                                 nextInterval =
                                         Duration.ofMillis(
@@ -593,7 +589,7 @@ public class Scheduler {
             }
         }
 
-        if (this.enableFuzzing == true && card.getState() == State.REVIEW) {
+        if (this.enableFuzzing && card.getState() == State.REVIEW) {
 
             nextInterval = getFuzzedInterval(nextInterval);
         }
