@@ -1,6 +1,9 @@
 /* (C)2025 */
 package io.github.openspacedrepetition;
 
+import lombok.Getter;
+
+@Getter
 public enum Rating {
     AGAIN(1),
     HARD(2),
@@ -11,9 +14,5 @@ public enum Rating {
 
     Rating(int value) {
         this.value = value;
-    }
-
-    public int getValue() {
-        return value;
     }
 }

@@ -1,6 +1,9 @@
 /* (C)2025 */
 package io.github.openspacedrepetition;
 
+import lombok.Getter;
+
+@Getter
 public enum State {
     LEARNING(1),
     REVIEW(2),
@@ -10,9 +13,5 @@ public enum State {
 
     State(int value) {
         this.value = value;
-    }
-
-    public int getValue() {
-        return value;
     }
 }
