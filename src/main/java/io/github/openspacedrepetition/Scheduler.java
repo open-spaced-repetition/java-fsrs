@@ -287,7 +287,7 @@ public class Scheduler {
         maxIvl = Math.min(maxIvl, this.maximumInterval);
         minIvl = Math.min(minIvl, maxIvl);
 
-        return new int[]{minIvl, maxIvl};
+        return new int[] {minIvl, maxIvl};
     }
 
     private Duration getFuzzedInterval(Duration interval) {
