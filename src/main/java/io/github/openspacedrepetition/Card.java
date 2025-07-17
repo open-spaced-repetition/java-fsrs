@@ -71,5 +71,4 @@ public class Card {
         this.due = otherCard.due;
         this.lastReview = otherCard.lastReview;
     }
-
 }
