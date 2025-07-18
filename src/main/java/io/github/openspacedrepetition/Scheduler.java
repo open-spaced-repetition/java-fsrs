@@ -7,9 +7,11 @@ import java.time.temporal.ChronoUnit;
 import java.util.Random;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.EqualsAndHashCode;
 
 @Getter
 @ToString
+@EqualsAndHashCode
 public class Scheduler {
 
     private static final double[] DEFAULT_PARAMETERS = {
@@ -58,6 +60,21 @@ public class Scheduler {
 
     public static Scheduler defaultScheduler() {
         return new Builder().build();
+    }
+
+    public Scheduler(Scheduler otherScheduler) {
+
+        this.parameters = otherScheduler.parameters;
+        this.desiredRetention = otherScheduler.desiredRetention;
+        this.learningSteps = otherScheduler.learningSteps;
+        this.relearningSteps = otherScheduler.relearningSteps;
+        this.maximumInterval = otherScheduler.maximumInterval;
+        this.enableFuzzing = otherScheduler.enableFuzzing;
+        this.randomSeed = otherScheduler.randomSeed;
+        this.DECAY = otherScheduler.DECAY;
+        this.FACTOR = otherScheduler.FACTOR;
+
+
     }
 
     public static class Builder {
