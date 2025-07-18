@@ -5,9 +5,9 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Random;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import lombok.EqualsAndHashCode;
 
 @Getter
 @ToString
@@ -73,8 +73,6 @@ public class Scheduler {
         this.randomSeed = otherScheduler.randomSeed;
         this.DECAY = otherScheduler.DECAY;
         this.FACTOR = otherScheduler.FACTOR;
-
-
     }
 
     public static class Builder {

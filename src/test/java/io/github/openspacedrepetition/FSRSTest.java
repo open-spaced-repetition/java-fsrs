@@ -172,6 +172,5 @@ public class FSRSTest {
         ReviewLog reviewLogReview2 = result.reviewLog();
 
         assertThat(reviewLogReview1).isNotEqualTo(reviewLogReview2);
-
     }
 }
