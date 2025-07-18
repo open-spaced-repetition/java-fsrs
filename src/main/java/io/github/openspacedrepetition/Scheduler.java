@@ -5,11 +5,13 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Random;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
 @Getter
 @ToString
+@EqualsAndHashCode
 public class Scheduler {
 
     private static final double[] DEFAULT_PARAMETERS = {
@@ -58,6 +60,19 @@ public class Scheduler {
 
     public static Scheduler defaultScheduler() {
         return new Builder().build();
+    }
+
+    public Scheduler(Scheduler otherScheduler) {
+
+        this.parameters = otherScheduler.parameters;
+        this.desiredRetention = otherScheduler.desiredRetention;
+        this.learningSteps = otherScheduler.learningSteps;
+        this.relearningSteps = otherScheduler.relearningSteps;
+        this.maximumInterval = otherScheduler.maximumInterval;
+        this.enableFuzzing = otherScheduler.enableFuzzing;
+        this.randomSeed = otherScheduler.randomSeed;
+        this.DECAY = otherScheduler.DECAY;
+        this.FACTOR = otherScheduler.FACTOR;
     }
 
     public static class Builder {
