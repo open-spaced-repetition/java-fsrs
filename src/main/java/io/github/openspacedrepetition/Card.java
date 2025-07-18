@@ -5,10 +5,12 @@ import java.time.Instant;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.EqualsAndHashCode;
 
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode
 public class Card {
 
     private final int cardId;
