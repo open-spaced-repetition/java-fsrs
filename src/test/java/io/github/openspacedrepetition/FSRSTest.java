@@ -143,4 +143,35 @@ public class FSRSTest {
         intervalDays = (int) interval.toDays();
         assertThat(intervalDays).isEqualTo(18);
     }
+
+    @Test
+    public void testEqualsMethods() {
+
+        Scheduler scheduler1 = Scheduler.defaultScheduler();
+        Scheduler scheduler2 = new Scheduler.Builder().setDesiredRetention(0.91).build();
+        Scheduler scheduler1Copy = new Scheduler(scheduler1);
+
+        assertThat(scheduler1).isNotEqualTo(scheduler2);
+        assertThat(scheduler1).isEqualTo(scheduler1Copy);
+
+        Card cardOrig = new Card();
+        Card cardOrigCopy = new Card(cardOrig);
+
+        assertThat(cardOrig).isEqualTo(cardOrigCopy);
+
+        CardAndReviewLog result = scheduler1.reviewCard(cardOrig, Rating.GOOD);
+        Card cardReview1 = result.card();
+        ReviewLog reviewLogReview1 = result.reviewLog();
+
+        ReviewLog reviewLogReview1Copy = new ReviewLog(reviewLogReview1);
+
+        assertThat(cardOrig).isNotEqualTo(cardReview1);
+        assertThat(reviewLogReview1).isEqualTo(reviewLogReview1Copy);
+
+        result = scheduler1.reviewCard(cardReview1, Rating.GOOD);
+        ReviewLog reviewLogReview2 = result.reviewLog();
+
+        assertThat(reviewLogReview1).isNotEqualTo(reviewLogReview2);
+
+    }
 }
