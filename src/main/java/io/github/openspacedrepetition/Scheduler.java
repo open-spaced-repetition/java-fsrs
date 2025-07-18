@@ -6,8 +6,10 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Random;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
+@ToString
 public class Scheduler {
 
     private static final double[] DEFAULT_PARAMETERS = {
