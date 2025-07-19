@@ -7,20 +7,16 @@ The following instructions assume you've already
 2. Distributed your public key to the `keyserver.ubuntu.com` key server 
 3. Configured your `~/m2/settings.xml` file with your token credentials
 
-## Step 1. Compile code to `target/`
+## Step 1. Build, sign and deploy to Maven Central
 
-```bash
-mvn clean install
-```
-
-Note that GPG will ask for your password.
-
-## Step 2. Deploy to Maven Central
+This can all be done in executing the following command:
 
 ```bash
 mvn deploy
 ```
 
-## Step 3. Publish on Maven Central
+(Note that GPG will ask for your password.)
+
+## Step 2. Publish on Maven Central
 
 Once your deployment is valideated on the [Deployments page](https://central.sonatype.com/publishing/deployments), press Publish. You will then have to wait ~15 minutes for the Component to be published.
