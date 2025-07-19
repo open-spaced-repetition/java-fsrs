@@ -16,7 +16,7 @@ public class FSRSTest {
     @Test
     public void testReviewDefaultArg() {
 
-        Scheduler scheduler = Scheduler.defaultScheduler();
+        Scheduler scheduler = new Scheduler();
 
         Card card = new Card();
 
@@ -147,7 +147,7 @@ public class FSRSTest {
     @Test
     public void testEqualsMethods() {
 
-        Scheduler scheduler1 = Scheduler.defaultScheduler();
+        Scheduler scheduler1 = new Scheduler();
         Scheduler scheduler2 = new Scheduler.Builder().setDesiredRetention(0.91).build();
         Scheduler scheduler1Copy = new Scheduler(scheduler1);
 
