@@ -58,10 +58,6 @@ public class Scheduler {
         this.FACTOR = Math.pow(0.9, 1.0 / this.DECAY) - 1;
     }
 
-    public static Scheduler defaultScheduler() {
-        return new Builder().build();
-    }
-
     public Scheduler(Scheduler otherScheduler) {
 
         this.parameters = otherScheduler.parameters;
@@ -73,6 +69,20 @@ public class Scheduler {
         this.randomSeed = otherScheduler.randomSeed;
         this.DECAY = otherScheduler.DECAY;
         this.FACTOR = otherScheduler.FACTOR;
+    }
+
+    public Scheduler() {
+
+        this.parameters = DEFAULT_PARAMETERS;
+        this.desiredRetention = 0.9;
+        this.learningSteps = DEFAULT_LEARNING_STEPS;
+        this.relearningSteps = DEFAULT_RELEARNING_STEPS;
+        this.maximumInterval = 36500;
+        this.enableFuzzing = true;
+        this.randomSeed = new Random(42);
+
+        this.DECAY = -this.parameters[20];
+        this.FACTOR = Math.pow(0.9, 1.0 / this.DECAY) - 1;
     }
 
     public static class Builder {

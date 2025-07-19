@@ -45,7 +45,7 @@ public class SRS {
 
     public static void main(String[] args) {
 
-        Scheduler scheduler = Scheduler.defaultScheduler();
+        Scheduler scheduler = new Scheduler();
 
         // note: all new cards are 'due' immediately upon creation
         Card card = new Card();
