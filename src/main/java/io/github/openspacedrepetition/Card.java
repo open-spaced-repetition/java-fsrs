@@ -22,6 +22,89 @@ public class Card {
     private Instant due;
     private Instant lastReview;
 
+    private Card(Builder builder) {
+
+        this.cardId = builder.cardId;
+        this.state = builder.state;
+        this.stability = builder.stability;
+        this.difficulty = builder.difficulty;
+        this.due = builder.due;
+        this.lastReview = builder.lastReview;
+
+    }
+
+    public static class Builder {
+
+        private Integer cardId = null;
+
+        private State state;
+        private Integer step;
+        private Double stability;
+        private Double difficulty;
+        private Instant due;
+        private Instant lastReview;
+
+        public Builder setCardId(int cardId) {
+            this.cardId = cardId;
+            return this;
+        }
+
+        public Builder setState(State state) {
+            this.state = state;
+            return this;
+        }
+
+        public Builder setStep(Integer step) {
+            this.step = step;
+            return this;
+        }
+
+        public Builder setStability(Double stability) {
+            this.stability = stability;
+            return this;
+        }
+
+        public Builder setDifficulty(Double difficulty) {
+            this.difficulty = difficulty;
+            return this;
+        }
+
+        public Builder setDue(Instant due) {
+            this.due = due;
+            return this;
+        }
+
+        public Builder setLastReview(Instant lastReview) {
+            this.lastReview = lastReview;
+            return this;
+        }
+
+        public Card build() {
+
+            if (this.cardId == null) {
+                this.cardId = (int) Instant.now().toEpochMilli();
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt(); // restore interrupted status
+                }
+            }
+
+            if (this.state == State.LEARNING && this.step == null) {
+                this.step = 0;
+            }
+
+            if (this.due == null) {
+                this.due = Instant.now();
+            }
+
+
+            return new Card(this);
+        }
+
+
+    }
+
     public Card(
             Integer cardId,
             State state,
