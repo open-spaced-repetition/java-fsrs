@@ -105,49 +105,6 @@ public class Card {
 
     }
 
-    public Card(
-            Integer cardId,
-            State state,
-            Integer step,
-            Double stability,
-            Double difficulty,
-            Instant due,
-            Instant lastReview) {
-
-        if (cardId == null) {
-            cardId = (int) Instant.now().toEpochMilli();
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt(); // restore interrupted status
-            }
-        }
-
-        this.cardId = cardId;
-
-        this.state = state;
-
-        if (this.state == State.LEARNING && step == null) {
-            step = 0;
-        }
-        this.step = step;
-
-        this.stability = stability;
-        this.difficulty = difficulty;
-
-        if (due == null) {
-            due = Instant.now();
-        }
-        this.due = due;
-
-        this.lastReview = lastReview;
-    }
-
-    public Card() {
-
-        this(null, State.LEARNING, null, null, null, null, null);
-    }
-
     public Card(Card otherCard) {
 
         this.cardId = otherCard.cardId;
