@@ -26,11 +26,16 @@ public class Card {
 
         this.cardId = builder.cardId;
         this.state = builder.state;
+        this.step = builder.step;
         this.stability = builder.stability;
         this.difficulty = builder.difficulty;
         this.due = builder.due;
         this.lastReview = builder.lastReview;
 
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     public static class Builder {
