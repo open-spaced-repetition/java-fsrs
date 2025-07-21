@@ -7,6 +7,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import org.junit.jupiter.api.*;
@@ -18,7 +19,7 @@ public class FSRSTest {
 
         Scheduler scheduler = new Scheduler();
 
-        Card card = new Card();
+        Card card = Card.builder().build();
 
         Rating rating = Rating.GOOD;
 
@@ -40,7 +41,7 @@ public class FSRSTest {
 
         Scheduler scheduler = new Scheduler.Builder().setMaximumInterval(maximumInterval).build();
 
-        Card card = new Card();
+        Card card = new Card.Builder().build();
 
         CardAndReviewLog result = scheduler.reviewCard(card, Rating.EASY, card.getDue());
         card = result.card();
@@ -85,7 +86,7 @@ public class FSRSTest {
             Rating.GOOD,
         };
 
-        Card card = new Card();
+        Card card = Card.builder().build();
         Instant reviewDatetime = Instant.parse("2022-11-29T12:30:00Z");
 
         List<Integer> ivlHistory = new ArrayList<>();
@@ -109,7 +110,7 @@ public class FSRSTest {
 
         Scheduler scheduler = new Scheduler.Builder().setRandomSeed(randomSeed1).build();
 
-        Card card = new Card();
+        Card card = Card.builder().build();
 
         CardAndReviewLog result = scheduler.reviewCard(card, Rating.GOOD, Instant.now());
         card = result.card();
@@ -128,7 +129,7 @@ public class FSRSTest {
 
         scheduler = new Scheduler.Builder().setRandomSeed(randomSeed2).build();
 
-        card = new Card();
+        card = Card.builder().build();
 
         result = scheduler.reviewCard(card, Rating.GOOD, Instant.now());
         card = result.card();
@@ -154,7 +155,7 @@ public class FSRSTest {
         assertThat(scheduler1).isNotEqualTo(scheduler2);
         assertThat(scheduler1).isEqualTo(scheduler1Copy);
 
-        Card cardOrig = new Card();
+        Card cardOrig = Card.builder().build();
         Card cardOrigCopy = new Card(cardOrig);
 
         assertThat(cardOrig).isEqualTo(cardOrigCopy);
@@ -172,5 +173,25 @@ public class FSRSTest {
         ReviewLog reviewLogReview2 = result.reviewLog();
 
         assertThat(reviewLogReview1).isNotEqualTo(reviewLogReview2);
+    }
+
+    @Test
+    public void testUniqueCardIds() {
+
+        List<Integer> cardIds = new ArrayList<Integer>();
+
+        Card card;
+        int cardId;
+        for (int i = 1; i < 1000; i++) {
+
+            card = Card.builder().build();
+            cardId = card.getCardId();
+            cardIds.add(cardId);
+        }
+
+        int totalCountCardIds = cardIds.size();
+        int uniqueCountCardIds = new HashSet<>(cardIds).size();
+
+        assertThat(uniqueCountCardIds).isEqualTo(totalCountCardIds);
     }
 }

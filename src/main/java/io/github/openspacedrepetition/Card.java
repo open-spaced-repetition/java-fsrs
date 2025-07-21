@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
@@ -22,47 +23,55 @@ public class Card {
     private Instant due;
     private Instant lastReview;
 
-    public Card(
-            Integer cardId,
-            State state,
-            Integer step,
-            Double stability,
-            Double difficulty,
-            Instant due,
-            Instant lastReview) {
+    private Card(Builder builder) {
 
-        if (cardId == null) {
-            cardId = (int) Instant.now().toEpochMilli();
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt(); // restore interrupted status
-            }
-        }
-
-        this.cardId = cardId;
-
-        this.state = state;
-
-        if (this.state == State.LEARNING && step == null) {
-            step = 0;
-        }
-        this.step = step;
-
-        this.stability = stability;
-        this.difficulty = difficulty;
-
-        if (due == null) {
-            due = Instant.now();
-        }
-        this.due = due;
-
-        this.lastReview = lastReview;
+        this.cardId = builder.cardId;
+        this.state = builder.state;
+        this.step = builder.step;
+        this.stability = builder.stability;
+        this.difficulty = builder.difficulty;
+        this.due = builder.due;
+        this.lastReview = builder.lastReview;
     }
 
-    public Card() {
+    public static Builder builder() {
+        return new Builder();
+    }
 
-        this(null, State.LEARNING, null, null, null, null, null);
+    @Setter
+    @Accessors(fluent = true, chain = true)
+    public static class Builder {
+
+        private Integer cardId = null;
+
+        private State state = State.LEARNING;
+        private Integer step = null;
+        private Double stability = null;
+        private Double difficulty = null;
+        private Instant due = null;
+        private Instant lastReview = null;
+
+        public Card build() {
+
+            if (this.cardId == null) {
+                this.cardId = (int) Instant.now().toEpochMilli();
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt(); // restore interrupted status
+                }
+            }
+
+            if (this.state == State.LEARNING && this.step == null) {
+                this.step = 0;
+            }
+
+            if (this.due == null) {
+                this.due = Instant.now();
+            }
+
+            return new Card(this);
+        }
     }
 
     public Card(Card otherCard) {
