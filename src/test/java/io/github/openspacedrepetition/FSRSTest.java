@@ -7,6 +7,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import org.junit.jupiter.api.*;
@@ -172,5 +173,27 @@ public class FSRSTest {
         ReviewLog reviewLogReview2 = result.reviewLog();
 
         assertThat(reviewLogReview1).isNotEqualTo(reviewLogReview2);
+    }
+
+    @Test
+    public void testUniqueCardIds() {
+
+        List<Integer> cardIds = new ArrayList<Integer>();
+
+        Card card;
+        int cardId;
+        for (int i = 1; i<1000; i++) {
+
+            card = new Card();
+            cardId = card.getCardId();
+            cardIds.add(cardId);
+
+        }
+
+        int totalCountCardIds = cardIds.size();
+        int uniqueCountCardIds = new HashSet<>(cardIds).size();
+
+        assertThat(uniqueCountCardIds).isEqualTo(totalCountCardIds);
+
     }
 }
