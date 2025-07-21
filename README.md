@@ -48,7 +48,7 @@ public class SRS {
         Scheduler scheduler = new Scheduler();
 
         // note: all new cards are 'due' immediately upon creation
-        Card card = new Card();
+        Card card = Card.builder().build();
 
         // Choose a rating and review the card with the scheduler
         /*
