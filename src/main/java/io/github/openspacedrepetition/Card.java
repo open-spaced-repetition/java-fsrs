@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
@@ -38,6 +39,8 @@ public class Card {
         return new Builder();
     }
 
+    @Setter
+    @Accessors(fluent = true, chain = true)
     public static class Builder {
 
         private Integer cardId = null;
@@ -48,41 +51,6 @@ public class Card {
         private Double difficulty = null;
         private Instant due = null;
         private Instant lastReview = null;
-
-        public Builder cardId(int cardId) {
-            this.cardId = cardId;
-            return this;
-        }
-
-        public Builder state(State state) {
-            this.state = state;
-            return this;
-        }
-
-        public Builder step(Integer step) {
-            this.step = step;
-            return this;
-        }
-
-        public Builder stability(Double stability) {
-            this.stability = stability;
-            return this;
-        }
-
-        public Builder difficulty(Double difficulty) {
-            this.difficulty = difficulty;
-            return this;
-        }
-
-        public Builder due(Instant due) {
-            this.due = due;
-            return this;
-        }
-
-        public Builder lastReview(Instant lastReview) {
-            this.lastReview = lastReview;
-            return this;
-        }
 
         public Card build() {
 
