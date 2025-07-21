@@ -49,37 +49,37 @@ public class Card {
         private Instant due = null;
         private Instant lastReview = null;
 
-        public Builder setCardId(int cardId) {
+        public Builder cardId(int cardId) {
             this.cardId = cardId;
             return this;
         }
 
-        public Builder setState(State state) {
+        public Builder state(State state) {
             this.state = state;
             return this;
         }
 
-        public Builder setStep(Integer step) {
+        public Builder step(Integer step) {
             this.step = step;
             return this;
         }
 
-        public Builder setStability(Double stability) {
+        public Builder stability(Double stability) {
             this.stability = stability;
             return this;
         }
 
-        public Builder setDifficulty(Double difficulty) {
+        public Builder difficulty(Double difficulty) {
             this.difficulty = difficulty;
             return this;
         }
 
-        public Builder setDue(Instant due) {
+        public Builder due(Instant due) {
             this.due = due;
             return this;
         }
 
-        public Builder setLastReview(Instant lastReview) {
+        public Builder lastReview(Instant lastReview) {
             this.lastReview = lastReview;
             return this;
         }
