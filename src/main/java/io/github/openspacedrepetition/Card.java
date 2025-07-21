@@ -37,12 +37,12 @@ public class Card {
 
         private Integer cardId = null;
 
-        private State state;
-        private Integer step;
-        private Double stability;
-        private Double difficulty;
-        private Instant due;
-        private Instant lastReview;
+        private State state = State.LEARNING;
+        private Integer step = null;
+        private Double stability = null;
+        private Double difficulty = null;
+        private Instant due = null;
+        private Instant lastReview = null;
 
         public Builder setCardId(int cardId) {
             this.cardId = cardId;
