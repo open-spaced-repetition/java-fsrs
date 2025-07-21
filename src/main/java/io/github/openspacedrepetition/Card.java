@@ -32,7 +32,6 @@ public class Card {
         this.difficulty = builder.difficulty;
         this.due = builder.due;
         this.lastReview = builder.lastReview;
-
     }
 
     public static Builder builder() {
@@ -71,11 +70,8 @@ public class Card {
                 this.due = Instant.now();
             }
 
-
             return new Card(this);
         }
-
-
     }
 
     public Card(Card otherCard) {

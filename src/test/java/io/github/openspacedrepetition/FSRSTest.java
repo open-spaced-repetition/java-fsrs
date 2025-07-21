@@ -182,18 +182,16 @@ public class FSRSTest {
 
         Card card;
         int cardId;
-        for (int i = 1; i<1000; i++) {
+        for (int i = 1; i < 1000; i++) {
 
             card = Card.builder().build();
             cardId = card.getCardId();
             cardIds.add(cardId);
-
         }
 
         int totalCountCardIds = cardIds.size();
         int uniqueCountCardIds = new HashSet<>(cardIds).size();
 
         assertThat(uniqueCountCardIds).isEqualTo(totalCountCardIds);
-
     }
 }
