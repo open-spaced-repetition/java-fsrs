@@ -4,3 +4,4 @@ target/
 .vscode/
 .idea/
 .gradle/
+build/
