@@ -353,7 +353,8 @@ public class Scheduler {
         if (card.getLastReview() == null) {
             daysSinceLastReview = null;
         } else {
-            daysSinceLastReview = (int) ChronoUnit.DAYS.between(card.getLastReview(), reviewDatetime);
+            daysSinceLastReview =
+                    (int) ChronoUnit.DAYS.between(card.getLastReview(), reviewDatetime);
         }
 
         State cardState = card.getState();
