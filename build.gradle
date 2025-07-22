@@ -7,6 +7,7 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
+    id 'com.diffplug.spotless' version '7.2.1'
 }
 
 repositories {
@@ -26,6 +27,19 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+spotless {
+    format('misc') {
+        target '.gitattributes', '.gitignore'
+        trimTrailingWhitespace()
+        endWithNewline()
+        indentWithTabs()
+    }
+    java {
+        googleJavaFormat('1.17.0').aosp().reflowLongStrings().formatJavadoc(false)
+        licenseHeader '/* (C)$YEAR */'
+    }
 }
 
 group = 'io.github.open-spaced-repetition'
