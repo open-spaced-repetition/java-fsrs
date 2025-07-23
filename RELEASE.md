@@ -1,21 +1,19 @@
 # Notes for release managers
 
-(tl;dr: follow this amazing [tutorial](https://www.youtube.com/watch?v=i1kg5OUwJi8) with subtitles on)
+(tl;dr: follow this [tutorial](https://www.youtube.com/watch?v=nd2ULXyBaV8))
 
 The following instructions assume you've already
 1. Generated a GPG key pair,
-2. Distributed your public key to the `keyserver.ubuntu.com` key server 
-3. Configured your `~/m2/settings.xml` file with your token credentials
+2. Distributed your public key to the `keyserver.ubuntu.com` key server
+3. Configured your `~/.gradle/gradle.properties` file with your credentials
 
 ## Step 1. Build, sign and deploy to Maven Central
 
-This can all be done in executing the following command:
+This can all be done by executing the following command:
 
 ```bash
-mvn deploy
+./gradlew publishToMavenCentral --no-configuration-cache
 ```
-
-(Note that GPG will ask for your password.)
 
 ## Step 2. Publish on Maven Central
 
