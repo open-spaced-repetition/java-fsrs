@@ -1,0 +1,70 @@
+plugins {
+    id 'java-library'
+    id 'com.diffplug.spotless' version '7.2.1'
+    id "com.vanniktech.maven.publish" version "0.34.0"
+}
+
+group = 'io.github.open-spaced-repetition'
+version = '0.4.0'
+description = 'Java library for FSRS Spaced Repetition'
+java.sourceCompatibility = JavaVersion.VERSION_17
+java.targetCompatibility = JavaVersion.VERSION_17
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly libs.org.projectlombok.lombok
+    annotationProcessor libs.org.projectlombok.lombok
+
+    testImplementation libs.org.assertj.assertj.core
+    testImplementation libs.org.junit.jupiter.junit.jupiter
+}
+
+test {
+    useJUnitPlatform()
+}
+
+spotless {
+    format('misc') {
+        target '.gitattributes', '.gitignore'
+        trimTrailingWhitespace()
+        endWithNewline()
+        indentWithTabs()
+    }
+    java {
+        googleJavaFormat('1.17.0').aosp().reflowLongStrings().formatJavadoc(false)
+        licenseHeader '/* (C)$YEAR */'
+    }
+}
+
+mavenPublishing {
+    coordinates(group.toString(), project.name, version.toString())
+
+    pom {
+        name = "fsrs"
+        description = "Java library for FSRS Spaced Repetition"
+        inceptionYear = "2025"
+        url = "https://github.com/open-spaced-repetition/java-fsrs"
+        licenses {
+            license {
+                name = "MIT License"
+                url = "https://www.opensource.org/licenses/mit-license.php"
+                distribution = "https://www.opensource.org/licenses/mit-license.php"
+            }
+        }
+        developers {
+            developer {
+                id = "joshdavham"
+                name = "Joshua Hamilton"
+                url = "https://github.com/joshdavham"
+            }
+        }
+        scm {
+            url = "https://github.com/open-spaced-repetition/java-fsrs"
+            connection = "scm:git:git://github.com/open-spaced-repetition/java-fsrs.git"
+            developerConnection = "scm:git:ssh://git@github.com/open-spaced-repetition/java-fsrs.git"
+        }
+    }
+}
