@@ -21,10 +21,14 @@ public class Scheduler {
         0.2172, 1.1771, 3.2602, 16.1507, 7.0114, 0.57, 2.0966, 0.0069, 1.5261, 0.112, 1.0178, 1.849,
         0.1133, 0.3127, 2.2934, 0.2191, 3.0004, 0.7536, 0.3332, 0.1437, 0.2
     };
+    private static final double DEFUALT_DESIRED_RETENTION = 0.9;
     private static final Duration[] DEFAULT_LEARNING_STEPS = {
         Duration.ofMinutes(1), Duration.ofMinutes(10)
     };
     private static final Duration[] DEFAULT_RELEARNING_STEPS = {Duration.ofMinutes(10)};
+    private static final int DEFAULT_MAXIMUM_INTERVAL = 36500;
+    private static final boolean DEFAULT_ENABLE_FUZZING = true;
+    private static final Random DEFAULT_RANDOM_SEED = new Random(42);
     private static final double STABILITY_MIN = 0.001;
     private static final double MIN_DIFFICULTY = 1.0;
     private static final double MAX_DIFFICULTY = 10.0;
@@ -37,7 +41,7 @@ public class Scheduler {
         new FuzzRange(20.0, Double.POSITIVE_INFINITY, 0.05),
     };
 
-    // instance variables
+    // configurable instance variables
     private final double[] parameters;
     private final double desiredRetention;
     private final Duration[] learningSteps;
@@ -45,6 +49,8 @@ public class Scheduler {
     private final int maximumInterval;
     private final boolean enableFuzzing;
     private final Random randomSeed;
+
+    // derived instance variables
     private final double DECAY;
     private final double FACTOR;
 
@@ -71,12 +77,12 @@ public class Scheduler {
     public static class Builder {
 
         private double[] parameters = DEFAULT_PARAMETERS;
-        private double desiredRetention = 0.9;
+        private double desiredRetention = DEFUALT_DESIRED_RETENTION;
         private Duration[] learningSteps = DEFAULT_LEARNING_STEPS;
         private Duration[] relearningSteps = DEFAULT_RELEARNING_STEPS;
-        private int maximumInterval = 36500;
-        private boolean enableFuzzing = true;
-        private Random randomSeed = new Random(42);
+        private int maximumInterval = DEFAULT_MAXIMUM_INTERVAL;
+        private boolean enableFuzzing = DEFAULT_ENABLE_FUZZING;
+        private Random randomSeed = DEFAULT_RANDOM_SEED;
 
         public Builder parameters(double[] parameters) {
             this.parameters = parameters;
