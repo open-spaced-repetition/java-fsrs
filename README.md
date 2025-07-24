@@ -45,7 +45,7 @@ public class SRS {
 
     public static void main(String[] args) {
 
-        Scheduler scheduler = new Scheduler();
+        Scheduler scheduler = Scheduler.builder().build();
 
         // note: all new cards are 'due' immediately upon creation
         Card card = Card.builder().build();
@@ -64,7 +64,7 @@ public class SRS {
         ReviewLog reviewLog = result.reviewLog();
 
         System.out.println(
-                "Card rated " + reviewLog.rating() + " at " + reviewLog.reviewDateTime());
+                "Card rated " + reviewLog.rating() + " at " + reviewLog.reviewDatetime());
         // > Card rated GOOD at 2025-07-10T04:16:19.637219Z
 
         // when the card is due next for review
