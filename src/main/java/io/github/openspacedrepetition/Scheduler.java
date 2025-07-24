@@ -64,19 +64,6 @@ public class Scheduler {
         return new Builder();
     }
 
-    public Scheduler(Scheduler otherScheduler) {
-
-        this.parameters = otherScheduler.parameters;
-        this.desiredRetention = otherScheduler.desiredRetention;
-        this.learningSteps = otherScheduler.learningSteps;
-        this.relearningSteps = otherScheduler.relearningSteps;
-        this.maximumInterval = otherScheduler.maximumInterval;
-        this.enableFuzzing = otherScheduler.enableFuzzing;
-        this.randomSeed = otherScheduler.randomSeed;
-        this.DECAY = otherScheduler.DECAY;
-        this.FACTOR = otherScheduler.FACTOR;
-    }
-
     public static class Builder {
 
         private double[] parameters = DEFAULT_PARAMETERS;
@@ -125,6 +112,19 @@ public class Scheduler {
         public Scheduler build() {
             return new Scheduler(this);
         }
+    }
+
+    public Scheduler(Scheduler otherScheduler) {
+
+        this.parameters = otherScheduler.parameters;
+        this.desiredRetention = otherScheduler.desiredRetention;
+        this.learningSteps = otherScheduler.learningSteps;
+        this.relearningSteps = otherScheduler.relearningSteps;
+        this.maximumInterval = otherScheduler.maximumInterval;
+        this.enableFuzzing = otherScheduler.enableFuzzing;
+        this.randomSeed = otherScheduler.randomSeed;
+        this.DECAY = otherScheduler.DECAY;
+        this.FACTOR = otherScheduler.FACTOR;
     }
 
     public double getCardRetrievability(Card card, Instant currentDatetime) {
