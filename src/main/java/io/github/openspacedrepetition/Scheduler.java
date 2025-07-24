@@ -7,7 +7,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.Random;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 
 @Getter
 @ToString
@@ -64,6 +66,8 @@ public class Scheduler {
         return new Builder();
     }
 
+    @Setter
+    @Accessors(fluent = true, chain = true)
     public static class Builder {
 
         private double[] parameters = DEFAULT_PARAMETERS;
@@ -76,36 +80,6 @@ public class Scheduler {
 
         public Builder parameters(double[] parameters) {
             this.parameters = parameters;
-            return this;
-        }
-
-        public Builder desiredRetention(double desiredRetention) {
-            this.desiredRetention = desiredRetention;
-            return this;
-        }
-
-        public Builder learningSteps(Duration[] learningSteps) {
-            this.learningSteps = learningSteps;
-            return this;
-        }
-
-        public Builder relearningSteps(Duration[] relearningSteps) {
-            this.relearningSteps = relearningSteps;
-            return this;
-        }
-
-        public Builder maximumInterval(int maximumInterval) {
-            this.maximumInterval = maximumInterval;
-            return this;
-        }
-
-        public Builder enableFuzzing(boolean enableFuzzing) {
-            this.enableFuzzing = enableFuzzing;
-            return this;
-        }
-
-        public Builder randomSeed(Random randomSeed) {
-            this.randomSeed = randomSeed;
             return this;
         }
 
