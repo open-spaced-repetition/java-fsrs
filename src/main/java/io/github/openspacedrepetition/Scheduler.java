@@ -60,6 +60,10 @@ public class Scheduler {
         this.FACTOR = Math.pow(0.9, 1.0 / this.DECAY) - 1;
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public Scheduler(Scheduler otherScheduler) {
 
         this.parameters = otherScheduler.parameters;
