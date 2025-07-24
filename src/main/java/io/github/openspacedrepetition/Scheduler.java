@@ -74,37 +74,37 @@ public class Scheduler {
         private boolean enableFuzzing = true;
         private Random randomSeed = new Random(42);
 
-        public Builder setParameters(double[] parameters) {
+        public Builder parameters(double[] parameters) {
             this.parameters = parameters;
             return this;
         }
 
-        public Builder setDesiredRetention(double desiredRetention) {
+        public Builder desiredRetention(double desiredRetention) {
             this.desiredRetention = desiredRetention;
             return this;
         }
 
-        public Builder setLearningSteps(Duration[] learningSteps) {
+        public Builder learningSteps(Duration[] learningSteps) {
             this.learningSteps = learningSteps;
             return this;
         }
 
-        public Builder setRelearningSteps(Duration[] relearningSteps) {
+        public Builder relearningSteps(Duration[] relearningSteps) {
             this.relearningSteps = relearningSteps;
             return this;
         }
 
-        public Builder setMaximumInterval(int maximumInterval) {
+        public Builder maximumInterval(int maximumInterval) {
             this.maximumInterval = maximumInterval;
             return this;
         }
 
-        public Builder setEnableFuzzing(boolean enableFuzzing) {
+        public Builder enableFuzzing(boolean enableFuzzing) {
             this.enableFuzzing = enableFuzzing;
             return this;
         }
 
-        public Builder setRandomSeed(Random randomSeed) {
+        public Builder randomSeed(Random randomSeed) {
             this.randomSeed = randomSeed;
             return this;
         }
