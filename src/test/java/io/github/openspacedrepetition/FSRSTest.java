@@ -17,7 +17,7 @@ public class FSRSTest {
     @Test
     public void testReviewDefaultArg() {
 
-        Scheduler scheduler = new Scheduler();
+        Scheduler scheduler = Scheduler.builder().build();
 
         Card card = Card.builder().build();
 
@@ -39,7 +39,7 @@ public class FSRSTest {
 
         int maximumInterval = 100;
 
-        Scheduler scheduler = new Scheduler.Builder().setMaximumInterval(maximumInterval).build();
+        Scheduler scheduler = Scheduler.builder().setMaximumInterval(maximumInterval).build();
 
         Card card = new Card.Builder().build();
 
@@ -68,7 +68,7 @@ public class FSRSTest {
     @Test
     public void testReviewCard() {
 
-        Scheduler scheduler = new Scheduler.Builder().setEnableFuzzing(false).build();
+        Scheduler scheduler = Scheduler.builder().setEnableFuzzing(false).build();
 
         Rating[] ratings = {
             Rating.GOOD,
@@ -108,7 +108,7 @@ public class FSRSTest {
 
         Random randomSeed1 = new Random(42);
 
-        Scheduler scheduler = new Scheduler.Builder().setRandomSeed(randomSeed1).build();
+        Scheduler scheduler = Scheduler.builder().setRandomSeed(randomSeed1).build();
 
         Card card = Card.builder().build();
 
@@ -127,7 +127,7 @@ public class FSRSTest {
 
         Random randomSeed2 = new Random(12345);
 
-        scheduler = new Scheduler.Builder().setRandomSeed(randomSeed2).build();
+        scheduler = Scheduler.builder().setRandomSeed(randomSeed2).build();
 
         card = Card.builder().build();
 
@@ -148,8 +148,8 @@ public class FSRSTest {
     @Test
     public void testEqualsMethods() {
 
-        Scheduler scheduler1 = new Scheduler();
-        Scheduler scheduler2 = new Scheduler.Builder().setDesiredRetention(0.91).build();
+        Scheduler scheduler1 = Scheduler.builder().build();
+        Scheduler scheduler2 = Scheduler.builder().setDesiredRetention(0.91).build();
         Scheduler scheduler1Copy = new Scheduler(scheduler1);
 
         assertThat(scheduler1).isNotEqualTo(scheduler2);
