@@ -14,6 +14,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class Scheduler {
 
+    // constants
     private static final double[] DEFAULT_PARAMETERS = {
         0.2172, 1.1771, 3.2602, 16.1507, 7.0114, 0.57, 2.0966, 0.0069, 1.5261, 0.112, 1.0178, 1.849,
         0.1133, 0.3127, 2.2934, 0.2191, 3.0004, 0.7536, 0.3332, 0.1437, 0.2
@@ -34,6 +35,7 @@ public class Scheduler {
         new FuzzRange(20.0, Double.POSITIVE_INFINITY, 0.05),
     };
 
+    // instance variables
     private final double[] parameters;
     private final double desiredRetention;
     private final Duration[] learningSteps;
@@ -69,20 +71,6 @@ public class Scheduler {
         this.randomSeed = otherScheduler.randomSeed;
         this.DECAY = otherScheduler.DECAY;
         this.FACTOR = otherScheduler.FACTOR;
-    }
-
-    public Scheduler() {
-
-        this.parameters = DEFAULT_PARAMETERS;
-        this.desiredRetention = 0.9;
-        this.learningSteps = DEFAULT_LEARNING_STEPS;
-        this.relearningSteps = DEFAULT_RELEARNING_STEPS;
-        this.maximumInterval = 36500;
-        this.enableFuzzing = true;
-        this.randomSeed = new Random(42);
-
-        this.DECAY = -this.parameters[20];
-        this.FACTOR = Math.pow(0.9, 1.0 / this.DECAY) - 1;
     }
 
     public static class Builder {
