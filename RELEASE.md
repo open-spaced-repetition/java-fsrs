@@ -7,14 +7,12 @@ The following instructions assume you've already
 2. Distributed your public key to the `keyserver.ubuntu.com` key server
 3. Configured your `~/.gradle/gradle.properties` file with your credentials
 
-## Step 1. Build, sign and deploy to Maven Central
-
-This can all be done by executing the following command:
+## Step 1. Deploy to Maven Central
 
 ```bash
 ./gradlew publishToMavenCentral --no-configuration-cache
 ```
 
-## Step 2. Publish on Maven Central
+## Step 2. Monitor release on Maven Central
 
-Once your deployment is valideated on the [Deployments page](https://central.sonatype.com/publishing/deployments), press Publish. You will then have to wait ~15 minutes for the Component to be published.
+Once your deployment is validated on the [Deployments page](https://central.sonatype.com/publishing/deployments), it will automatically attempt to publish a new release. You will then have to wait ~15 minutes for the Component to be published.
