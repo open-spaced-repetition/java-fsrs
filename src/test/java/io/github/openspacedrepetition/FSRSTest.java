@@ -194,4 +194,40 @@ public class FSRSTest {
 
         assertThat(uniqueCountCardIds).isEqualTo(totalCountCardIds);
     }
+
+    @Test
+    public void testReviewLogSerialize() {
+
+        Scheduler scheduler = Scheduler.builder().build();
+        Card card = Card.builder().build();
+
+        Rating rating = Rating.AGAIN;
+        CardAndReviewLog result = scheduler.reviewCard(card, rating);
+        card = result.card();
+        ReviewLog reviewLog = result.reviewLog();
+
+        assertThat(reviewLog.toJson()).isInstanceOf(String.class);
+
+        // we can reconstruct a copy of the ReviewLog object equivalent to the original
+        String reviewLogJson = reviewLog.toJson();
+        ReviewLog copiedReviewLog = ReviewLog.fromJson(reviewLogJson);
+        assertThat(reviewLog).isEqualTo(copiedReviewLog);
+        assertThat(reviewLog.toJson()).isEqualTo(copiedReviewLog.toJson());
+
+        // (x2) perform the above tests once more with a ReviewLog from a reviewed Card
+        rating = Rating.GOOD;
+        result = scheduler.reviewCard(card, rating);
+        ReviewLog nextReviewLog = result.reviewLog();
+
+        assertThat(reviewLog.toJson()).isInstanceOf(String.class);
+
+        String nextReviewLogJson = nextReviewLog.toJson();
+        ReviewLog copiedNextReviewLog = ReviewLog.fromJson(nextReviewLogJson);
+        assertThat(nextReviewLog).isEqualTo(copiedNextReviewLog);
+        assertThat(nextReviewLog.toJson()).isEqualTo(copiedNextReviewLog.toJson());
+
+        // original review log and next review log are different
+        assertThat(reviewLog).isNotEqualTo(nextReviewLog);
+        assertThat(reviewLog.toJson()).isNotEqualTo(nextReviewLog.toJson());
+    }
 }
