@@ -229,6 +229,5 @@ public class FSRSTest {
         // original review log and next review log are different
         assertThat(reviewLog).isNotEqualTo(nextReviewLog);
         assertThat(reviewLog.toJson()).isNotEqualTo(nextReviewLog.toJson());
-
     }
 }

@@ -1,17 +1,18 @@
 /* (C)2025 */
 package io.github.openspacedrepetition;
 
-import java.time.Instant;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.time.Instant;
 
 public record ReviewLog(
         @JsonProperty("cardId") int cardId,
         @JsonProperty("rating") Rating rating,
-        @JsonProperty("review_datetime") @JsonFormat(shape = JsonFormat.Shape.STRING) Instant reviewDatetime,
+        @JsonProperty("review_datetime") @JsonFormat(shape = JsonFormat.Shape.STRING)
+                Instant reviewDatetime,
         @JsonProperty("reviewDuration") Integer reviewDuration) {
 
     public ReviewLog(ReviewLog otherReviewLog) {
@@ -41,5 +42,4 @@ public record ReviewLog(
             throw new RuntimeException(e);
         }
     }
-
 }
