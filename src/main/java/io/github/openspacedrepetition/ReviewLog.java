@@ -33,4 +33,13 @@ public record ReviewLog(
         }
     }
 
+    public static ReviewLog fromJson(String json) {
+        ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        try {
+            return mapper.readValue(json, ReviewLog.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
