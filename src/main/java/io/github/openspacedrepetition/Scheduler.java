@@ -1,6 +1,13 @@
 /* (C)2025 */
 package io.github.openspacedrepetition;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -13,7 +20,8 @@ import lombok.experimental.Accessors;
 
 @Getter
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = "randomSeed")
+@JsonDeserialize(builder = Scheduler.Builder.class)
 public class Scheduler {
 
     // constants
@@ -28,7 +36,7 @@ public class Scheduler {
     private static final Duration[] DEFAULT_RELEARNING_STEPS = {Duration.ofMinutes(10)};
     private static final int DEFAULT_MAXIMUM_INTERVAL = 36500;
     private static final boolean DEFAULT_ENABLE_FUZZING = true;
-    private static final Random DEFAULT_RANDOM_SEED = new Random(42);
+    private static final int DEFAULT_RANDOM_SEED_NUMBER = 42;
     private static final double STABILITY_MIN = 0.001;
     private static final double MIN_DIFFICULTY = 1.0;
     private static final double MAX_DIFFICULTY = 10.0;
@@ -48,11 +56,16 @@ public class Scheduler {
     private final Duration[] relearningSteps;
     private final int maximumInterval;
     private final boolean enableFuzzing;
-    private final Random randomSeed;
+    private final int randomSeedNumber;
 
     // derived instance variables
+    @Getter(onMethod = @__(@JsonIgnore))
     private final double DECAY;
+
+    @Getter(onMethod = @__(@JsonIgnore))
     private final double FACTOR;
+
+    @JsonIgnore private final Random randomSeed;
 
     private Scheduler(Builder builder) {
 
@@ -62,10 +75,11 @@ public class Scheduler {
         this.relearningSteps = builder.relearningSteps;
         this.maximumInterval = builder.maximumInterval;
         this.enableFuzzing = builder.enableFuzzing;
-        this.randomSeed = builder.randomSeed;
+        this.randomSeedNumber = builder.randomSeedNumber;
 
         this.DECAY = -this.parameters[20];
         this.FACTOR = Math.pow(0.9, 1.0 / this.DECAY) - 1;
+        this.randomSeed = new Random(this.randomSeedNumber);
     }
 
     public static Builder builder() {
@@ -74,6 +88,7 @@ public class Scheduler {
 
     @Setter
     @Accessors(fluent = true, chain = true)
+    @JsonPOJOBuilder(withPrefix = "")
     public static class Builder {
 
         private double[] parameters = DEFAULT_PARAMETERS;
@@ -82,12 +97,7 @@ public class Scheduler {
         private Duration[] relearningSteps = DEFAULT_RELEARNING_STEPS;
         private int maximumInterval = DEFAULT_MAXIMUM_INTERVAL;
         private boolean enableFuzzing = DEFAULT_ENABLE_FUZZING;
-        private Random randomSeed = DEFAULT_RANDOM_SEED;
-
-        public Builder parameters(double[] parameters) {
-            this.parameters = parameters;
-            return this;
-        }
+        private int randomSeedNumber = DEFAULT_RANDOM_SEED_NUMBER;
 
         public Scheduler build() {
             return new Scheduler(this);
@@ -102,9 +112,34 @@ public class Scheduler {
         this.relearningSteps = otherScheduler.relearningSteps;
         this.maximumInterval = otherScheduler.maximumInterval;
         this.enableFuzzing = otherScheduler.enableFuzzing;
-        this.randomSeed = otherScheduler.randomSeed;
+        this.randomSeedNumber = otherScheduler.randomSeedNumber;
         this.DECAY = otherScheduler.DECAY;
         this.FACTOR = otherScheduler.FACTOR;
+        this.randomSeed = otherScheduler.randomSeed;
+    }
+
+    public String toJson() {
+
+        ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        try {
+            return mapper.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Scheduler fromJson(String json) {
+
+        ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        try {
+            return mapper.readValue(json, Scheduler.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public double getCardRetrievability(Card card, Instant currentDatetime) {

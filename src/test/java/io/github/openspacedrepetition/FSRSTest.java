@@ -9,7 +9,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import org.junit.jupiter.api.*;
 
 public class FSRSTest {
@@ -106,9 +105,9 @@ public class FSRSTest {
     @Test
     public void testFuzz() {
 
-        Random randomSeed1 = new Random(42);
+        int randomSeedNumber1 = 42;
 
-        Scheduler scheduler = Scheduler.builder().randomSeed(randomSeed1).build();
+        Scheduler scheduler = Scheduler.builder().randomSeedNumber(randomSeedNumber1).build();
 
         Card card = Card.builder().build();
 
@@ -125,9 +124,9 @@ public class FSRSTest {
         int intervalDays = (int) interval.toDays();
         assertThat(intervalDays).isEqualTo(19);
 
-        Random randomSeed2 = new Random(12345);
+        int randomSeedNumber2 = 12345;
 
-        scheduler = Scheduler.builder().randomSeed(randomSeed2).build();
+        scheduler = Scheduler.builder().randomSeedNumber(randomSeedNumber2).build();
 
         card = Card.builder().build();
 
@@ -259,5 +258,18 @@ public class FSRSTest {
         // original card and reviewed card are different
         assertThat(card).isNotEqualTo(reviewedCard);
         assertThat(card.toJson()).isNotEqualTo(reviewedCard.toJson());
+    }
+
+    @Test
+    public void testSchedulerSerialize() {
+
+        Scheduler scheduler = Scheduler.builder().build();
+
+        assertThat(scheduler.toJson()).isInstanceOf(String.class);
+
+        String schedulerJson = scheduler.toJson();
+        Scheduler copiedScheduler = Scheduler.fromJson(schedulerJson);
+        assertThat(scheduler).isEqualTo(copiedScheduler);
+        assertThat(scheduler.toJson()).isEqualTo(copiedScheduler.toJson());
     }
 }
