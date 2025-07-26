@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'io.github.open-spaced-repetition'
-version = '0.5.1'
+version = '0.5.2'
 description = 'Java library for FSRS Spaced Repetition'
 java.sourceCompatibility = JavaVersion.VERSION_17
 java.targetCompatibility = JavaVersion.VERSION_17
