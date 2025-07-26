@@ -230,4 +230,36 @@ public class FSRSTest {
         assertThat(reviewLog).isNotEqualTo(nextReviewLog);
         assertThat(reviewLog.toJson()).isNotEqualTo(nextReviewLog.toJson());
     }
+
+    @Test
+    public void testCardSerialize() {
+
+        Scheduler scheduler = Scheduler.builder().build();
+
+        Card card = Card.builder().build();
+
+        assertThat(card.toJson()).isInstanceOf(String.class);
+
+        String cardJson = card.toJson();
+        Card copiedCard = Card.fromJson(cardJson);
+        assertThat(card).isEqualTo(copiedCard);
+        assertThat(card.toJson()).isEqualTo(copiedCard.toJson());
+
+        CardAndReviewLog result = scheduler.reviewCard(card, Rating.GOOD);
+        Card reviewedCard = result.card();
+        ReviewLog reviewLog = result.reviewLog();
+
+        assertThat(reviewedCard.toJson()).isInstanceOf(String.class);
+
+        String reviewedCardJson = reviewedCard.toJson();
+        Card copiedReviewedCard = Card.fromJson(reviewedCardJson);
+        assertThat(reviewedCard).isEqualTo(copiedReviewedCard);
+        assertThat(reviewedCard.toJson()).isEqualTo(copiedReviewedCard.toJson());
+
+
+        // original card and reviewed card are different
+        assertThat(card).isNotEqualTo(reviewedCard);
+        assertThat(card.toJson()).isNotEqualTo(reviewedCard.toJson());
+
+    }
 }
