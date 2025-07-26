@@ -2,16 +2,24 @@
 package io.github.openspacedrepetition;
 
 import java.time.Instant;
+
+import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Getter
 @Setter
 @ToString
 @EqualsAndHashCode
+@JsonDeserialize(builder = Card.Builder.class)
 public class Card {
 
     private final int cardId;
@@ -40,6 +48,7 @@ public class Card {
 
     @Setter
     @Accessors(fluent = true, chain = true)
+    @JsonPOJOBuilder(withPrefix = "")
     public static class Builder {
 
         private Integer cardId = null;
@@ -83,5 +92,31 @@ public class Card {
         this.difficulty = otherCard.difficulty;
         this.due = otherCard.due;
         this.lastReview = otherCard.lastReview;
+    }
+
+    public String toJson() {
+
+        ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        try {
+            return mapper.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException();
+        }
+
+    }
+
+    public static Card fromJson(String json) {
+
+        ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        try {
+            return mapper.readValue(json, Card.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }
