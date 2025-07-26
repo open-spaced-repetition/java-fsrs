@@ -9,7 +9,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import org.junit.jupiter.api.*;
 
 public class FSRSTest {
@@ -272,6 +271,5 @@ public class FSRSTest {
         Scheduler copiedScheduler = Scheduler.fromJson(schedulerJson);
         assertThat(scheduler).isEqualTo(copiedScheduler);
         assertThat(scheduler.toJson()).isEqualTo(copiedScheduler.toJson());
-
     }
 }

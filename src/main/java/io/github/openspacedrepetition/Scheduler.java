@@ -1,18 +1,17 @@
 /* (C)2025 */
 package io.github.openspacedrepetition;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Random;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Random;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -62,10 +61,11 @@ public class Scheduler {
     // derived instance variables
     @Getter(onMethod = @__(@JsonIgnore))
     private final double DECAY;
+
     @Getter(onMethod = @__(@JsonIgnore))
     private final double FACTOR;
-    @JsonIgnore
-    private final Random randomSeed;
+
+    @JsonIgnore private final Random randomSeed;
 
     private Scheduler(Builder builder) {
 
@@ -116,7 +116,6 @@ public class Scheduler {
         this.DECAY = otherScheduler.DECAY;
         this.FACTOR = otherScheduler.FACTOR;
         this.randomSeed = otherScheduler.randomSeed;
-
     }
 
     public String toJson() {
@@ -129,7 +128,6 @@ public class Scheduler {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public static Scheduler fromJson(String json) {
@@ -142,7 +140,6 @@ public class Scheduler {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public double getCardRetrievability(Card card, Instant currentDatetime) {
