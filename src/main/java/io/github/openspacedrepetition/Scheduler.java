@@ -5,6 +5,14 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Random;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +21,8 @@ import lombok.experimental.Accessors;
 
 @Getter
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = "randomSeed")
+@JsonDeserialize(builder = Scheduler.Builder.class)
 public class Scheduler {
 
     // constants
@@ -51,8 +60,11 @@ public class Scheduler {
     private final int randomSeedNumber;
 
     // derived instance variables
+    @Getter(onMethod = @__(@JsonIgnore))
     private final double DECAY;
+    @Getter(onMethod = @__(@JsonIgnore))
     private final double FACTOR;
+    @JsonIgnore
     private final Random randomSeed;
 
     private Scheduler(Builder builder) {
@@ -76,6 +88,7 @@ public class Scheduler {
 
     @Setter
     @Accessors(fluent = true, chain = true)
+    @JsonPOJOBuilder(withPrefix = "")
     public static class Builder {
 
         private double[] parameters = DEFAULT_PARAMETERS;
@@ -103,6 +116,32 @@ public class Scheduler {
         this.DECAY = otherScheduler.DECAY;
         this.FACTOR = otherScheduler.FACTOR;
         this.randomSeed = otherScheduler.randomSeed;
+
+    }
+
+    public String toJson() {
+
+        ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        try {
+            return mapper.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public static Scheduler fromJson(String json) {
+
+        ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        try {
+            return mapper.readValue(json, Scheduler.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
