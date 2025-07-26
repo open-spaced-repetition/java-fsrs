@@ -59,12 +59,8 @@ public class Scheduler {
     private final int randomSeedNumber;
 
     // derived instance variables
-    @Getter(onMethod = @__(@JsonIgnore))
     private final double DECAY;
-
-    @Getter(onMethod = @__(@JsonIgnore))
     private final double FACTOR;
-
     @JsonIgnore private final Random randomSeed;
 
     private Scheduler(Builder builder) {
@@ -80,6 +76,16 @@ public class Scheduler {
         this.DECAY = -this.parameters[20];
         this.FACTOR = Math.pow(0.9, 1.0 / this.DECAY) - 1;
         this.randomSeed = new Random(this.randomSeedNumber);
+    }
+
+    @JsonIgnore
+    public double getDECAY() {
+        return this.DECAY;
+    }
+
+    @JsonIgnore
+    public double getFACTOR() {
+        return this.FACTOR;
     }
 
     public static Builder builder() {
