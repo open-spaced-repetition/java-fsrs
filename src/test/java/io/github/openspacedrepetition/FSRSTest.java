@@ -256,10 +256,8 @@ public class FSRSTest {
         assertThat(reviewedCard).isEqualTo(copiedReviewedCard);
         assertThat(reviewedCard.toJson()).isEqualTo(copiedReviewedCard.toJson());
 
-
         // original card and reviewed card are different
         assertThat(card).isNotEqualTo(reviewedCard);
         assertThat(card.toJson()).isNotEqualTo(reviewedCard.toJson());
-
     }
 }

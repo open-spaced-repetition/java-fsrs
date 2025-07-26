@@ -1,19 +1,18 @@
 /* (C)2025 */
 package io.github.openspacedrepetition;
 
-import java.time.Instant;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.time.Instant;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Getter
 @Setter
@@ -104,7 +103,6 @@ public class Card {
         } catch (JsonProcessingException e) {
             throw new RuntimeException();
         }
-
     }
 
     public static Card fromJson(String json) {
@@ -117,6 +115,5 @@ public class Card {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-
     }
 }
