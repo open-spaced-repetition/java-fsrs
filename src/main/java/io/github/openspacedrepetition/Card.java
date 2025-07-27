@@ -10,6 +10,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.time.Instant;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
@@ -30,7 +31,7 @@ public class Card {
     private Instant due;
     private Instant lastReview;
 
-    private Card(Builder builder) {
+    private Card(@NonNull Builder builder) {
 
         this.cardId = builder.cardId;
         this.state = builder.state;
@@ -82,7 +83,7 @@ public class Card {
         }
     }
 
-    public Card(Card otherCard) {
+    public Card(@NonNull Card otherCard) {
 
         this.cardId = otherCard.cardId;
         this.state = otherCard.state;
@@ -105,7 +106,7 @@ public class Card {
         }
     }
 
-    public static Card fromJson(String json) {
+    public static Card fromJson(@NonNull String json) {
 
         ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);

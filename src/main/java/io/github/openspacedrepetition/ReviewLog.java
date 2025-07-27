@@ -7,15 +7,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.time.Instant;
+import lombok.NonNull;
 
 public record ReviewLog(
         @JsonProperty("cardId") int cardId,
-        @JsonProperty("rating") Rating rating,
-        @JsonProperty("review_datetime") @JsonFormat(shape = JsonFormat.Shape.STRING)
+        @NonNull @JsonProperty("rating") Rating rating,
+        @NonNull @JsonProperty("review_datetime") @JsonFormat(shape = JsonFormat.Shape.STRING)
                 Instant reviewDatetime,
         @JsonProperty("reviewDuration") Integer reviewDuration) {
 
-    public ReviewLog(ReviewLog otherReviewLog) {
+    public ReviewLog(@NonNull ReviewLog otherReviewLog) {
         this(
                 otherReviewLog.cardId,
                 otherReviewLog.rating,
@@ -34,7 +35,7 @@ public record ReviewLog(
         }
     }
 
-    public static ReviewLog fromJson(String json) {
+    public static ReviewLog fromJson(@NonNull String json) {
         ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
         try {
             return mapper.readValue(json, ReviewLog.class);
