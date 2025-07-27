@@ -16,6 +16,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.NonNull;
 import lombok.experimental.Accessors;
 
 @Getter
@@ -63,7 +64,7 @@ public class Scheduler {
     private final double FACTOR;
     @JsonIgnore private final Random randomSeed;
 
-    private Scheduler(Builder builder) {
+    private Scheduler(@NonNull Builder builder) {
 
         this.parameters = builder.parameters;
         this.desiredRetention = builder.desiredRetention;
@@ -110,7 +111,7 @@ public class Scheduler {
         }
     }
 
-    public Scheduler(Scheduler otherScheduler) {
+    public Scheduler(@NonNull Scheduler otherScheduler) {
 
         this.parameters = otherScheduler.parameters;
         this.desiredRetention = otherScheduler.desiredRetention;
@@ -136,7 +137,7 @@ public class Scheduler {
         }
     }
 
-    public static Scheduler fromJson(String json) {
+    public static Scheduler fromJson(@NonNull String json) {
 
         ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
@@ -148,7 +149,7 @@ public class Scheduler {
         }
     }
 
-    public double getCardRetrievability(Card card, Instant currentDatetime) {
+    public double getCardRetrievability(@NonNull Card card, Instant currentDatetime) {
 
         if (card.getLastReview() == null) {
             return 0;
@@ -169,7 +170,7 @@ public class Scheduler {
         return Math.max(stability, STABILITY_MIN);
     }
 
-    private double initialStability(Rating rating) {
+    private double initialStability(@NonNull Rating rating) {
 
         double initialStability = this.parameters[rating.getValue() - 1];
 
@@ -183,7 +184,7 @@ public class Scheduler {
         return Math.min(Math.max(difficulty, MIN_DIFFICULTY), MAX_DIFFICULTY);
     }
 
-    private double initialDifficulty(Rating rating) {
+    private double initialDifficulty(@NonNull Rating rating) {
 
         double initialDifficulty =
                 this.parameters[4]
@@ -195,7 +196,7 @@ public class Scheduler {
         return initialDifficulty;
     }
 
-    private double shortTermStability(double stability, Rating rating) {
+    private double shortTermStability(double stability, @NonNull Rating rating) {
 
         double shortTermStabilityIncrease =
                 Math.exp(this.parameters[17] * (rating.getValue() - 3 + this.parameters[18]))
@@ -223,7 +224,7 @@ public class Scheduler {
         return this.parameters[7] * arg1 + (1 - this.parameters[7]) * arg2;
     }
 
-    private double nextDifficulty(double difficulty, Rating rating) {
+    private double nextDifficulty(double difficulty, @NonNull Rating rating) {
 
         double arg1 = initialDifficulty(Rating.EASY);
 
@@ -253,7 +254,7 @@ public class Scheduler {
     }
 
     private double nextRecallStability(
-            double difficulty, double stability, double retrievability, Rating rating) {
+            double difficulty, double stability, double retrievability, @NonNull Rating rating) {
 
         double hardPenalty = (rating == Rating.HARD) ? this.parameters[15] : 1;
 
@@ -270,7 +271,7 @@ public class Scheduler {
     }
 
     private double nextStability(
-            double difficulty, double stability, double retrievability, Rating rating) {
+            double difficulty, double stability, double retrievability, @NonNull Rating rating) {
 
         double nextStability;
 
@@ -328,7 +329,7 @@ public class Scheduler {
         return new int[] {minIvl, maxIvl};
     }
 
-    private Duration getFuzzedInterval(Duration interval) {
+    private Duration getFuzzedInterval(@NonNull Duration interval) {
 
         int intervalDays = (int) interval.toDays();
 

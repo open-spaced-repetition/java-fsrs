@@ -1,4 +1,6 @@
 /* (C)2025 */
 package io.github.openspacedrepetition;
 
-public record CardAndReviewLog(Card card, ReviewLog reviewLog) {}
+import lombok.NonNull;
+
+public record CardAndReviewLog(@NonNull Card card, @NonNull ReviewLog reviewLog) {}
