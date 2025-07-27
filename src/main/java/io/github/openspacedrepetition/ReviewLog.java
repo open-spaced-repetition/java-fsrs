@@ -6,8 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import lombok.NonNull;
 import java.time.Instant;
+import lombok.NonNull;
 
 public record ReviewLog(
         @JsonProperty("cardId") int cardId,

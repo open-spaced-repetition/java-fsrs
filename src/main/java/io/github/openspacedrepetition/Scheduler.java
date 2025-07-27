@@ -14,9 +14,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.Random;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.NonNull;
 import lombok.experimental.Accessors;
 
 @Getter
