@@ -2,6 +2,7 @@ plugins {
     id 'java-library'
     id 'com.diffplug.spotless' version '7.2.1'
     id "com.vanniktech.maven.publish" version "0.34.0"
+    id 'jacoco'
 }
 
 group = 'io.github.open-spaced-repetition'
@@ -42,6 +43,25 @@ spotless {
         licenseHeader '/* (C)$YEAR */'
     }
 }
+
+jacoco {
+    toolVersion "0.8.13"
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+    }
+
+    classDirectories.setFrom(
+            fileTree(dir: "$buildDir/classes/java/main", excludes: ['**/generated/**'])
+    )
+    sourceDirectories.setFrom(files('src/main/java'))
+    executionData.setFrom(fileTree(buildDir).include("/jacoco/test.exec"))
+}
+
 
 mavenPublishing {
     coordinates(group.toString(), project.name, version.toString())
