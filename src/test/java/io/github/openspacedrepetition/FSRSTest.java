@@ -517,6 +517,63 @@ public class FSRSTest {
     }
 
     @Test
+    public void testOneCardMultipleSchedulers() {
+
+        Scheduler schedulerWithTwoLearningSteps = Scheduler.builder().learningSteps(new Duration[]{Duration.ofMinutes(1), Duration.ofMinutes(10)}).build();
+        Scheduler schedulerWithOneLearningStep = Scheduler.builder().learningSteps(new Duration[]{Duration.ofMinutes(1)}).build();
+        Scheduler schedulerWithNoLearningSteps = Scheduler.builder().learningSteps(new Duration[]{}).build();
+
+        Scheduler schedulerWithTwoRelearningSteps = Scheduler.builder().relearningSteps(new Duration[]{Duration.ofMinutes(1), Duration.ofMinutes(10)}).build();
+        Scheduler schedulerWithOneRelearningStep = Scheduler.builder().relearningSteps(new Duration[]{Duration.ofMinutes(1)}).build();
+        Scheduler schedulerWithNoRelearningSteps = Scheduler.builder().relearningSteps(new Duration[]{}).build();
+
+        Card card = Card.builder().build();
+
+        // learning-state tests
+        assertThat(schedulerWithTwoLearningSteps.getLearningSteps().length).isEqualTo(2);
+        CardAndReviewLog result = schedulerWithTwoLearningSteps.reviewCard(card, Rating.GOOD, Instant.now());
+        card = result.card();
+        assertThat(card.getState()).isEqualTo(State.LEARNING);
+        assertThat(card.getStep()).isEqualTo(1);
+
+        assertThat(schedulerWithOneLearningStep.getLearningSteps().length).isEqualTo(1);
+        result = schedulerWithOneLearningStep.reviewCard(card, Rating.AGAIN, Instant.now());
+        card = result.card();
+        assertThat(card.getState()).isEqualTo(State.LEARNING);
+        assertThat(card.getStep()).isEqualTo(0);
+
+        assertThat(schedulerWithNoLearningSteps.getLearningSteps().length).isEqualTo(0);
+        result = schedulerWithNoLearningSteps.reviewCard(card, Rating.HARD, Instant.now());
+        card = result.card();
+        assertThat(card.getState()).isEqualTo(State.REVIEW);
+        assertThat(card.getStep()).isNull();
+
+        assertThat(schedulerWithTwoRelearningSteps.getRelearningSteps().length).isEqualTo(2);
+        result = schedulerWithNoLearningSteps.reviewCard(card, Rating.AGAIN, Instant.now());
+        card = result.card();
+        assertThat(card.getState()).isEqualTo(State.RELEARNING);
+        assertThat(card.getStep()).isEqualTo(0);
+
+        result = schedulerWithTwoRelearningSteps.reviewCard(card, Rating.GOOD, Instant.now());
+        card = result.card();
+        assertThat(card.getState()).isEqualTo(State.RELEARNING);
+        assertThat(card.getStep()).isEqualTo(1);
+
+        assertThat(schedulerWithOneRelearningStep.getRelearningSteps().length).isEqualTo(1);
+        result = schedulerWithOneRelearningStep.reviewCard(card, Rating.AGAIN, Instant.now());
+        card = result.card();
+        assertThat(card.getState()).isEqualTo(State.RELEARNING);
+        assertThat(card.getStep()).isEqualTo(0);
+
+        assertThat(schedulerWithNoRelearningSteps.getRelearningSteps().length).isEqualTo(0);
+        result = schedulerWithNoRelearningSteps.reviewCard(card, Rating.HARD, Instant.now());
+        card = result.card();
+        assertThat(card.getState()).isEqualTo(State.REVIEW);
+        assertThat(card.getStep()).isNull();
+
+    }
+
+    @Test
     public void testFuzz() {
 
         int randomSeedNumber1 = 42;
