@@ -139,6 +139,18 @@ public class FSRSTest {
     }
 
     @Test
+    public void testDatetime() {
+
+        Scheduler scheduler = Scheduler.builder().build();
+        Card card = Card.builder().build();
+
+        assertThat(Instant.now()).isAfterOrEqualTo(card.getDue());
+
+        
+
+    }
+
+    @Test
     public void testMaximumInterval() {
 
         int maximumInterval = 100;
