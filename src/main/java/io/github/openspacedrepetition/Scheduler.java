@@ -586,7 +586,7 @@ public class Scheduler {
 
                                 nextInterval =
                                         Duration.ofMillis(
-                                                Math.round(this.learningSteps[0].toMillis() * 1.5));
+                                                Math.round(this.relearningSteps[0].toMillis() * 1.5));
 
                             } else if (card.getStep() == 0) {
 
