@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -58,6 +60,43 @@ public class FSRSTest {
 
         assert card.getDifficulty() == 1.0;
 
+
+    }
+
+    @Test
+    public void testMemoState() {
+
+        Scheduler scheduler = Scheduler.builder().build();
+
+        Rating[] ratings = {Rating.AGAIN,
+                Rating.GOOD,
+                Rating.GOOD,
+                Rating.GOOD,
+                Rating.GOOD,
+                Rating.GOOD,};
+
+        int[] ivlHistory = {0, 0, 1, 3, 8, 21};
+
+        Card card = Card.builder().build();
+
+        Instant reviewDatetime = ZonedDateTime.of(2022, 11, 29, 12, 30, 0, 0, ZoneOffset.UTC).toInstant();
+
+        for (int i = 0; i < ratings.length; i++) {
+
+            Rating rating = ratings[i];
+            int ivl = ivlHistory[i];
+            reviewDatetime = reviewDatetime.plus(Duration.ofDays((long) ivl));
+
+            CardAndReviewLog result = scheduler.reviewCard(card, rating, reviewDatetime);
+            card = result.card();
+
+        }
+
+        CardAndReviewLog result = scheduler.reviewCard(card, Rating.GOOD, reviewDatetime);
+        card = result.card();
+
+        assertThat(card.getStability()).isCloseTo(49.4472, within(0.0001));
+        assertThat(card.getDifficulty()).isCloseTo(6.8271, within(0.0001));
 
     }
 
