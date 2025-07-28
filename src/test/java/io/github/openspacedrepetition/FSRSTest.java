@@ -891,4 +891,71 @@ public class FSRSTest {
 
     }
 
+    @Test
+    public void testRelearningCardRateHardTwoRelearningSteps() {
+
+        Duration firstRelearningStep = Duration.ofMinutes(1);
+        Duration secondRelearningStep = Duration.ofMinutes(10);
+
+        Scheduler schedulerWithTwoRelearningSteps = Scheduler.builder().relearningSteps(new Duration[]{firstRelearningStep, secondRelearningStep}).build();
+
+        Card card = Card.builder().build();
+
+        CardAndReviewLog result = schedulerWithTwoRelearningSteps.reviewCard(card, Rating.EASY, card.getDue());
+        card = result.card();
+
+        assertThat(card.getState()).isEqualTo(State.REVIEW);
+
+        result = schedulerWithTwoRelearningSteps.reviewCard(card, Rating.AGAIN, card.getDue());
+        card = result.card();
+
+        assertThat(card.getState()).isEqualTo(State.RELEARNING);
+        assertThat(card.getStep()).isEqualTo(0);
+
+        Instant prevDueDatetime = card.getDue();
+
+        result = schedulerWithTwoRelearningSteps.reviewCard(card, Rating.HARD, prevDueDatetime);
+        card = result.card();
+
+        assertThat(card.getState()).isEqualTo(State.RELEARNING);
+        assertThat(card.getStep()).isEqualTo(0);
+
+        Instant newDueDatetime = card.getDue();
+
+        double intervalLength = Duration.between(prevDueDatetime, newDueDatetime).toSeconds();
+
+        double expectedIntervalLength = (firstRelearningStep.plus(secondRelearningStep)).toSeconds() / 2.0;
+
+        assertThat(intervalLength).isEqualTo(expectedIntervalLength);
+
+        result = schedulerWithTwoRelearningSteps.reviewCard(card, Rating.GOOD, card.getDue());
+        card = result.card();
+
+        assertThat(card.getState()).isEqualTo(State.RELEARNING);
+        assertThat(card.getStep()).isEqualTo(1);
+
+        prevDueDatetime = card.getDue();
+
+        result = schedulerWithTwoRelearningSteps.reviewCard(card, Rating.HARD, prevDueDatetime);
+        card = result.card();
+
+        newDueDatetime = card.getDue();
+
+        assertThat(card.getState()).isEqualTo(State.RELEARNING);
+        assertThat(card.getStep()).isEqualTo(1);
+
+        intervalLength = Duration.between(prevDueDatetime, newDueDatetime).toSeconds();
+
+        expectedIntervalLength = secondRelearningStep.toSeconds();
+
+        assertThat(intervalLength).isEqualTo(expectedIntervalLength);
+
+        result = schedulerWithTwoRelearningSteps.reviewCard(card, Rating.EASY, prevDueDatetime);
+        card = result.card();
+
+        assertThat(card.getState()).isEqualTo(State.REVIEW);
+        assertThat(card.getStep()).isNull();
+
+    }
+
 }
