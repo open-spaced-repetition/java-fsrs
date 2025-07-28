@@ -323,6 +323,19 @@ public class FSRSTest {
     }
 
     @Test
+    public void testSchedulerSerialize() {
+
+        Scheduler scheduler = Scheduler.builder().build();
+
+        assertThat(scheduler.toJson()).isInstanceOf(String.class);
+
+        String schedulerJson = scheduler.toJson();
+        Scheduler copiedScheduler = Scheduler.fromJson(schedulerJson);
+        assertThat(scheduler).isEqualTo(copiedScheduler);
+        assertThat(scheduler.toJson()).isEqualTo(copiedScheduler.toJson());
+    }
+
+    @Test
     public void testMaximumInterval() {
 
         int maximumInterval = 100;
@@ -443,18 +456,5 @@ public class FSRSTest {
         int uniqueCountCardIds = new HashSet<>(cardIds).size();
 
         assertThat(uniqueCountCardIds).isEqualTo(totalCountCardIds);
-    }
-
-    @Test
-    public void testSchedulerSerialize() {
-
-        Scheduler scheduler = Scheduler.builder().build();
-
-        assertThat(scheduler.toJson()).isInstanceOf(String.class);
-
-        String schedulerJson = scheduler.toJson();
-        Scheduler copiedScheduler = Scheduler.fromJson(schedulerJson);
-        assertThat(scheduler).isEqualTo(copiedScheduler);
-        assertThat(scheduler.toJson()).isEqualTo(copiedScheduler.toJson());
     }
 }
