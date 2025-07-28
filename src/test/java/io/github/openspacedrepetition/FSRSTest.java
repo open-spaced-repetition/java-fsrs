@@ -16,23 +16,41 @@ import org.junit.jupiter.api.*;
 public class FSRSTest {
 
     @Test
-    public void testReviewDefaultArg() {
+    public void testReviewCard() {
 
-        Scheduler scheduler = Scheduler.builder().build();
+        Scheduler scheduler = Scheduler.builder().enableFuzzing(false).build();
+
+        Rating[] ratings = {
+                Rating.GOOD,
+                Rating.GOOD,
+                Rating.GOOD,
+                Rating.GOOD,
+                Rating.GOOD,
+                Rating.GOOD,
+                Rating.AGAIN,
+                Rating.AGAIN,
+                Rating.GOOD,
+                Rating.GOOD,
+                Rating.GOOD,
+                Rating.GOOD,
+                Rating.GOOD,
+        };
 
         Card card = Card.builder().build();
+        Instant reviewDatetime = Instant.parse("2022-11-29T12:30:00Z");
 
-        Rating rating = Rating.GOOD;
+        List<Integer> ivlHistory = new ArrayList<>();
+        for (Rating rating : ratings) {
 
-        CardAndReviewLog result = scheduler.reviewCard(card, rating);
-        card = result.card();
+            CardAndReviewLog result = scheduler.reviewCard(card, rating, reviewDatetime);
+            card = result.card();
 
-        Instant due = card.getDue();
+            int ivl = (int) ChronoUnit.DAYS.between(card.getLastReview(), card.getDue());
+            ivlHistory.add(ivl);
 
-        Duration timeDelta = Duration.between(Instant.now(), due);
-        int timeDeltaSeconds = (int) timeDelta.toSeconds();
-
-        assertThat(timeDeltaSeconds).isGreaterThan(500); // due in approx. 8-10 minutes
+            reviewDatetime = card.getDue();
+        }
+        assertThat(ivlHistory).isEqualTo(List.of(0, 4, 14, 45, 135, 372, 0, 0, 2, 5, 10, 20, 40));
     }
 
     @Test
@@ -101,6 +119,26 @@ public class FSRSTest {
     }
 
     @Test
+    public void testReviewDefaultArg() {
+
+        Scheduler scheduler = Scheduler.builder().build();
+
+        Card card = Card.builder().build();
+
+        Rating rating = Rating.GOOD;
+
+        CardAndReviewLog result = scheduler.reviewCard(card, rating);
+        card = result.card();
+
+        Instant due = card.getDue();
+
+        Duration timeDelta = Duration.between(Instant.now(), due);
+        int timeDeltaSeconds = (int) timeDelta.toSeconds();
+
+        assertThat(timeDeltaSeconds).isGreaterThan(500); // due in approx. 8-10 minutes
+    }
+
+    @Test
     public void testMaximumInterval() {
 
         int maximumInterval = 100;
@@ -129,44 +167,6 @@ public class FSRSTest {
         card = result.card();
         assertThat(Duration.between(card.getLastReview(), card.getDue()).toDays())
                 .isLessThanOrEqualTo(scheduler.getMaximumInterval());
-    }
-
-    @Test
-    public void testReviewCard() {
-
-        Scheduler scheduler = Scheduler.builder().enableFuzzing(false).build();
-
-        Rating[] ratings = {
-            Rating.GOOD,
-            Rating.GOOD,
-            Rating.GOOD,
-            Rating.GOOD,
-            Rating.GOOD,
-            Rating.GOOD,
-            Rating.AGAIN,
-            Rating.AGAIN,
-            Rating.GOOD,
-            Rating.GOOD,
-            Rating.GOOD,
-            Rating.GOOD,
-            Rating.GOOD,
-        };
-
-        Card card = Card.builder().build();
-        Instant reviewDatetime = Instant.parse("2022-11-29T12:30:00Z");
-
-        List<Integer> ivlHistory = new ArrayList<>();
-        for (Rating rating : ratings) {
-
-            CardAndReviewLog result = scheduler.reviewCard(card, rating, reviewDatetime);
-            card = result.card();
-
-            int ivl = (int) ChronoUnit.DAYS.between(card.getLastReview(), card.getDue());
-            ivlHistory.add(ivl);
-
-            reviewDatetime = card.getDue();
-        }
-        assertThat(ivlHistory).isEqualTo(List.of(0, 4, 14, 45, 135, 372, 0, 0, 2, 5, 10, 20, 40));
     }
 
     @Test
