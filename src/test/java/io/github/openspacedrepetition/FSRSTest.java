@@ -387,6 +387,28 @@ public class FSRSTest {
     }
 
     @Test
+    public void testHardLearningSteps() {
+
+        Scheduler scheduler = Scheduler.builder().build();
+
+        Instant createdAt = Instant.now();
+        Card card = Card.builder().build();
+
+        assertThat(card.getState()).isEqualTo(State.LEARNING);
+        assertThat(card.getStep()).isEqualTo(0);
+
+        Rating rating = Rating.HARD;
+        CardAndReviewLog result = scheduler.reviewCard(card, rating, card.getDue());
+        card = result.card();
+
+        assertThat(card.getState()).isEqualTo(State.LEARNING);
+        assertThat(card.getStep()).isEqualTo(0);
+        int i = (int) Math.round(Duration.between(createdAt, card.getDue()).toSeconds() / 10);
+        assertThat(i).isEqualTo(33);
+
+    }
+
+    @Test
     public void testMaximumInterval() {
 
         int maximumInterval = 100;
