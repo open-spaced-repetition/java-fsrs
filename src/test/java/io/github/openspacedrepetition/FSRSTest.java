@@ -670,6 +670,43 @@ public class FSRSTest {
     }
 
     @Test
+    public void testLearningCardRateHardSecondLearningStep() {
+
+        Duration firstLearningStep = Duration.ofMinutes(1);
+        Duration secondLearningStep = Duration.ofMinutes(10);
+
+        Scheduler schedulerWithTwoLearningSteps = Scheduler.builder().learningSteps(new Duration[]{firstLearningStep, secondLearningStep}).build();
+
+        Card card = Card.builder().build();
+
+        assertThat(card.getState()).isEqualTo(State.LEARNING);
+        assertThat(card.getStep()).isEqualTo(0);
+
+        CardAndReviewLog result = schedulerWithTwoLearningSteps.reviewCard(card, Rating.GOOD, card.getDue());
+        card = result.card();
+
+        assertThat(card.getState()).isEqualTo(State.LEARNING);
+        assertThat(card.getStep()).isEqualTo(1);
+
+        Instant dueDatetimeAfterFirstReview = card.getDue();
+
+        result = schedulerWithTwoLearningSteps.reviewCard(card, Rating.HARD, dueDatetimeAfterFirstReview);
+        card = result.card();
+
+        Instant dueDatetimeAfterSecondReview = card.getDue();
+
+        assertThat(card.getState()).isEqualTo(State.LEARNING);
+        assertThat(card.getStep()).isEqualTo(1);
+
+        double intervalLength = Duration.between(dueDatetimeAfterFirstReview, dueDatetimeAfterSecondReview).toMinutes();
+
+        double expectedIntervalLength = secondLearningStep.toMinutes();
+
+        assertThat(intervalLength).isEqualTo(expectedIntervalLength);
+
+    }
+
+    @Test
     public void testFuzz() {
 
         int randomSeedNumber1 = 42;
