@@ -517,6 +517,88 @@ public class FSRSTest {
     }
 
     @Test
+    public void testFuzz() {
+
+        int randomSeedNumber1 = 42;
+
+        Scheduler scheduler = Scheduler.builder().randomSeedNumber(randomSeedNumber1).build();
+
+        Card card = Card.builder().build();
+
+        CardAndReviewLog result = scheduler.reviewCard(card, Rating.GOOD, Instant.now());
+        card = result.card();
+
+        result = scheduler.reviewCard(card, Rating.GOOD, card.getDue());
+        card = result.card();
+
+        result = scheduler.reviewCard(card, Rating.GOOD, card.getDue());
+        card = result.card();
+
+        Duration interval = Duration.between(card.getLastReview(), card.getDue());
+        int intervalDays = (int) interval.toDays();
+        assertThat(intervalDays).isEqualTo(19);
+
+        int randomSeedNumber2 = 12345;
+
+        scheduler = Scheduler.builder().randomSeedNumber(randomSeedNumber2).build();
+
+        card = Card.builder().build();
+
+        result = scheduler.reviewCard(card, Rating.GOOD, Instant.now());
+        card = result.card();
+
+        result = scheduler.reviewCard(card, Rating.GOOD, card.getDue());
+        card = result.card();
+
+        result = scheduler.reviewCard(card, Rating.GOOD, card.getDue());
+        card = result.card();
+
+        interval = Duration.between(card.getLastReview(), card.getDue());
+        intervalDays = (int) interval.toDays();
+        assertThat(intervalDays).isEqualTo(18);
+    }
+
+    @Test
+    public void testNoLearningSteps() {
+
+        Scheduler scheduler = Scheduler.builder().learningSteps(new Duration[] {}).build();
+
+        assertThat(scheduler.getLearningSteps().length).isEqualTo(0);
+
+        Card card = Card.builder().build();
+        CardAndReviewLog result = scheduler.reviewCard(card, Rating.AGAIN, Instant.now());
+        card = result.card();
+
+        assertThat(card.getState()).isEqualTo(State.REVIEW);
+        int i = (int) Math.round(Duration.between(card.getLastReview(), card.getDue()).toDays());
+        assertThat(i).isGreaterThanOrEqualTo(1);
+
+    }
+
+    @Test
+    public void testNoRelearningSteps() {
+
+        Scheduler scheduler = Scheduler.builder().relearningSteps(new Duration[] {}).build();
+
+        assertThat(scheduler.getRelearningSteps().length).isEqualTo(0);
+
+        Card card = Card.builder().build();
+        CardAndReviewLog result = scheduler.reviewCard(card, Rating.GOOD, Instant.now());
+        card = result.card();
+        assertThat(card.getState()).isEqualTo(State.LEARNING);
+        result = scheduler.reviewCard(card, Rating.GOOD, card.getDue());
+        card = result.card();
+        assertThat(card.getState()).isEqualTo(State.REVIEW);
+        result = scheduler.reviewCard(card, Rating.AGAIN, card.getDue());
+        card = result.card();
+        assertThat(card.getState()).isEqualTo(State.REVIEW);
+
+        int i = (int) Math.round(Duration.between(card.getLastReview(), card.getDue()).toDays());
+        assertThat(i).isGreaterThanOrEqualTo(1);
+
+    }
+
+    @Test
     public void testOneCardMultipleSchedulers() {
 
         Scheduler schedulerWithTwoLearningSteps = Scheduler.builder().learningSteps(new Duration[]{Duration.ofMinutes(1), Duration.ofMinutes(10)}).build();
@@ -641,6 +723,36 @@ public class FSRSTest {
     }
 
     @Test
+    public void testEqualsMethods() {
+
+        Scheduler scheduler1 = Scheduler.builder().build();
+        Scheduler scheduler2 = Scheduler.builder().desiredRetention(0.91).build();
+        Scheduler scheduler1Copy = new Scheduler(scheduler1);
+
+        assertThat(scheduler1).isNotEqualTo(scheduler2);
+        assertThat(scheduler1).isEqualTo(scheduler1Copy);
+
+        Card cardOrig = Card.builder().build();
+        Card cardOrigCopy = new Card(cardOrig);
+
+        assertThat(cardOrig).isEqualTo(cardOrigCopy);
+
+        CardAndReviewLog result = scheduler1.reviewCard(cardOrig, Rating.GOOD);
+        Card cardReview1 = result.card();
+        ReviewLog reviewLogReview1 = result.reviewLog();
+
+        ReviewLog reviewLogReview1Copy = new ReviewLog(reviewLogReview1);
+
+        assertThat(cardOrig).isNotEqualTo(cardReview1);
+        assertThat(reviewLogReview1).isEqualTo(reviewLogReview1Copy);
+
+        result = scheduler1.reviewCard(cardReview1, Rating.GOOD);
+        ReviewLog reviewLogReview2 = result.reviewLog();
+
+        assertThat(reviewLogReview1).isNotEqualTo(reviewLogReview2);
+    }
+
+    @Test
     public void testLearningCardRateHardOneLearningStep() {
 
         Duration firstLearningStep = Duration.ofMinutes(10);
@@ -704,118 +816,6 @@ public class FSRSTest {
 
         assertThat(intervalLength).isEqualTo(expectedIntervalLength);
 
-    }
-
-    @Test
-    public void testFuzz() {
-
-        int randomSeedNumber1 = 42;
-
-        Scheduler scheduler = Scheduler.builder().randomSeedNumber(randomSeedNumber1).build();
-
-        Card card = Card.builder().build();
-
-        CardAndReviewLog result = scheduler.reviewCard(card, Rating.GOOD, Instant.now());
-        card = result.card();
-
-        result = scheduler.reviewCard(card, Rating.GOOD, card.getDue());
-        card = result.card();
-
-        result = scheduler.reviewCard(card, Rating.GOOD, card.getDue());
-        card = result.card();
-
-        Duration interval = Duration.between(card.getLastReview(), card.getDue());
-        int intervalDays = (int) interval.toDays();
-        assertThat(intervalDays).isEqualTo(19);
-
-        int randomSeedNumber2 = 12345;
-
-        scheduler = Scheduler.builder().randomSeedNumber(randomSeedNumber2).build();
-
-        card = Card.builder().build();
-
-        result = scheduler.reviewCard(card, Rating.GOOD, Instant.now());
-        card = result.card();
-
-        result = scheduler.reviewCard(card, Rating.GOOD, card.getDue());
-        card = result.card();
-
-        result = scheduler.reviewCard(card, Rating.GOOD, card.getDue());
-        card = result.card();
-
-        interval = Duration.between(card.getLastReview(), card.getDue());
-        intervalDays = (int) interval.toDays();
-        assertThat(intervalDays).isEqualTo(18);
-    }
-
-    @Test
-    public void testNoLearningSteps() {
-
-        Scheduler scheduler = Scheduler.builder().learningSteps(new Duration[] {}).build();
-
-        assertThat(scheduler.getLearningSteps().length).isEqualTo(0);
-
-        Card card = Card.builder().build();
-        CardAndReviewLog result = scheduler.reviewCard(card, Rating.AGAIN, Instant.now());
-        card = result.card();
-
-        assertThat(card.getState()).isEqualTo(State.REVIEW);
-        int i = (int) Math.round(Duration.between(card.getLastReview(), card.getDue()).toDays());
-        assertThat(i).isGreaterThanOrEqualTo(1);
-
-    }
-
-    @Test
-    public void testNoRelearningSteps() {
-
-        Scheduler scheduler = Scheduler.builder().relearningSteps(new Duration[] {}).build();
-
-        assertThat(scheduler.getRelearningSteps().length).isEqualTo(0);
-
-        Card card = Card.builder().build();
-        CardAndReviewLog result = scheduler.reviewCard(card, Rating.GOOD, Instant.now());
-        card = result.card();
-        assertThat(card.getState()).isEqualTo(State.LEARNING);
-        result = scheduler.reviewCard(card, Rating.GOOD, card.getDue());
-        card = result.card();
-        assertThat(card.getState()).isEqualTo(State.REVIEW);
-        result = scheduler.reviewCard(card, Rating.AGAIN, card.getDue());
-        card = result.card();
-        assertThat(card.getState()).isEqualTo(State.REVIEW);
-
-        int i = (int) Math.round(Duration.between(card.getLastReview(), card.getDue()).toDays());
-        assertThat(i).isGreaterThanOrEqualTo(1);
-
-    }
-
-    @Test
-    public void testEqualsMethods() {
-
-        Scheduler scheduler1 = Scheduler.builder().build();
-        Scheduler scheduler2 = Scheduler.builder().desiredRetention(0.91).build();
-        Scheduler scheduler1Copy = new Scheduler(scheduler1);
-
-        assertThat(scheduler1).isNotEqualTo(scheduler2);
-        assertThat(scheduler1).isEqualTo(scheduler1Copy);
-
-        Card cardOrig = Card.builder().build();
-        Card cardOrigCopy = new Card(cardOrig);
-
-        assertThat(cardOrig).isEqualTo(cardOrigCopy);
-
-        CardAndReviewLog result = scheduler1.reviewCard(cardOrig, Rating.GOOD);
-        Card cardReview1 = result.card();
-        ReviewLog reviewLogReview1 = result.reviewLog();
-
-        ReviewLog reviewLogReview1Copy = new ReviewLog(reviewLogReview1);
-
-        assertThat(cardOrig).isNotEqualTo(cardReview1);
-        assertThat(reviewLogReview1).isEqualTo(reviewLogReview1Copy);
-
-        result = scheduler1.reviewCard(cardReview1, Rating.GOOD);
-        ReviewLog reviewLogReview2 = result.reviewLog();
-
-        assertThat(reviewLogReview1).isNotEqualTo(reviewLogReview2);
     }
 
 }
