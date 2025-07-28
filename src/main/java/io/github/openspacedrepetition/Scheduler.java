@@ -149,20 +149,22 @@ public class Scheduler {
         }
     }
 
-    public double getCardRetrievability(@NonNull Card card, Instant currentDatetime) {
+    public double getCardRetrievability(@NonNull Card card, @NonNull Instant currentDatetime) {
 
         if (card.getLastReview() == null) {
             return 0;
-        }
-
-        if (currentDatetime == null) {
-            currentDatetime = Instant.now();
         }
 
         int elapsedDays =
                 (int) Math.max(0, ChronoUnit.DAYS.between(card.getLastReview(), currentDatetime));
 
         return Math.pow(1 + this.FACTOR * elapsedDays / card.getStability(), this.DECAY);
+    }
+
+    public double getCardRetrievability(@NonNull Card card) {
+
+        return getCardRetrievability(card, Instant.now());
+
     }
 
     private double clampStability(double stability) {
