@@ -34,6 +34,34 @@ public class FSRSTest {
     }
 
     @Test
+    public void testRepeatedCorrectReviews() {
+
+        Scheduler scheduler = Scheduler.builder().enableFuzzing(false).build();
+
+        Card card = Card.builder().build();
+
+        List<Instant> reviewDatetimes = new ArrayList<>();
+
+        for (int i = 0; i < 10; i++) {
+
+            Instant reviewDatetime = Instant.parse("2022-11-29T12:30:00Z").plusNanos(i * 1000);
+            reviewDatetimes.add(reviewDatetime);
+
+        }
+
+        for (Instant reviewDatetime : reviewDatetimes) {
+
+            CardAndReviewLog result = scheduler.reviewCard(card, Rating.EASY, reviewDatetime);
+            card = result.card();
+
+        }
+
+        assert card.getDifficulty() == 1.0;
+
+
+    }
+
+    @Test
     public void testMaximumInterval() {
 
         int maximumInterval = 100;
