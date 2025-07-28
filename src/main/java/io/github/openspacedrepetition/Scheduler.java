@@ -38,7 +38,7 @@ public class Scheduler {
     private static final int DEFAULT_MAXIMUM_INTERVAL = 36500;
     private static final boolean DEFAULT_ENABLE_FUZZING = true;
     private static final int DEFAULT_RANDOM_SEED_NUMBER = 42;
-    private static final double STABILITY_MIN = 0.001;
+    public static final double STABILITY_MIN = 0.001;
     private static final double MIN_DIFFICULTY = 1.0;
     private static final double MAX_DIFFICULTY = 10.0;
 
@@ -149,20 +149,21 @@ public class Scheduler {
         }
     }
 
-    public double getCardRetrievability(@NonNull Card card, Instant currentDatetime) {
+    public double getCardRetrievability(@NonNull Card card, @NonNull Instant currentDatetime) {
 
         if (card.getLastReview() == null) {
             return 0;
-        }
-
-        if (currentDatetime == null) {
-            currentDatetime = Instant.now();
         }
 
         int elapsedDays =
                 (int) Math.max(0, ChronoUnit.DAYS.between(card.getLastReview(), currentDatetime));
 
         return Math.pow(1 + this.FACTOR * elapsedDays / card.getStability(), this.DECAY);
+    }
+
+    public double getCardRetrievability(@NonNull Card card) {
+
+        return getCardRetrievability(card, Instant.now());
     }
 
     private double clampStability(double stability) {
@@ -510,7 +511,7 @@ public class Scheduler {
                 int nextIntervalDays;
                 switch (rating) {
                     case AGAIN -> {
-                        if (this.learningSteps.length == 0) {
+                        if (this.relearningSteps.length == 0) {
 
                             nextIntervalDays = nextInterval(card.getStability());
                             nextInterval = Duration.ofDays(nextIntervalDays);
@@ -584,7 +585,8 @@ public class Scheduler {
 
                                 nextInterval =
                                         Duration.ofMillis(
-                                                Math.round(this.learningSteps[0].toMillis() * 1.5));
+                                                Math.round(
+                                                        this.relearningSteps[0].toMillis() * 1.5));
 
                             } else if (card.getStep() == 0) {
 
