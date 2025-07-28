@@ -468,6 +468,55 @@ public class FSRSTest {
     }
 
     @Test
+    public void testRelearning() {
+
+        Scheduler scheduler = Scheduler.builder().enableFuzzing(false).build();
+        Card card = Card.builder().build();
+
+        Rating rating = Rating.GOOD;
+        CardAndReviewLog result = scheduler.reviewCard(card, rating, card.getDue());
+
+        rating = Rating.GOOD;
+        result = scheduler.reviewCard(card, rating, card.getDue());
+        card = result.card();
+
+        rating = Rating.GOOD;
+        result = scheduler.reviewCard(card, rating, card.getDue());
+        card = result.card();
+
+        Instant prevDue = card.getDue();
+        rating = Rating.AGAIN;
+        result = scheduler.reviewCard(card, rating, card.getDue());
+        card = result.card();
+
+        assertThat(card.getState()).isEqualTo(State.RELEARNING);
+        assertThat(card.getStep()).isEqualTo(0);
+        int i = (int) Math.round(Duration.between(prevDue, card.getDue()).toMinutes());
+        assertThat(i).isGreaterThanOrEqualTo(10);
+
+        prevDue = card.getDue();
+        rating = Rating.AGAIN;
+        result = scheduler.reviewCard(card, rating, card.getDue());
+        card = result.card();
+
+        assertThat(card.getState()).isEqualTo(State.RELEARNING);
+        assertThat(card.getStep()).isEqualTo(0);
+        i = (int) Math.round(Duration.between(prevDue, card.getDue()).toMinutes());
+        assertThat(i).isGreaterThanOrEqualTo(10);
+
+        prevDue = card.getDue();
+        rating = Rating.GOOD;
+        result = scheduler.reviewCard(card, rating, card.getDue());
+        card = result.card();
+
+        assertThat(card.getState()).isEqualTo(State.REVIEW);
+        assertThat(card.getStep()).isNull();
+        i = (int) Math.round(Duration.between(prevDue, card.getDue()).toDays());
+        assertThat(i).isGreaterThanOrEqualTo(1);
+
+    }
+
+    @Test
     public void testMaximumInterval() {
 
         int maximumInterval = 100;
