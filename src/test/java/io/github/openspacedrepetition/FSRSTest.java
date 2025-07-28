@@ -818,4 +818,41 @@ public class FSRSTest {
 
     }
 
+    @Test
+    public void testLongTermStabilityLearningState() {
+        /*
+        NOTE: currently, this test is mostly to make sure that
+        the unit tests cover the case when a card in the relearning state
+        is not reviewed on the same day to run the non-same-day stability calculations
+        */
+
+        Scheduler scheduler = Scheduler.builder().build();
+        Card card = Card.builder().build();
+
+        assertThat(card.getState()).isEqualTo(State.LEARNING);
+
+        CardAndReviewLog result = scheduler.reviewCard(card, Rating.EASY, card.getDue());
+        card = result.card();
+
+        assertThat(card.getState()).isEqualTo(State.REVIEW);
+
+        result = scheduler.reviewCard(card, Rating.AGAIN, card.getDue());
+        card = result.card();
+
+        assertThat(card.getState()).isEqualTo(State.RELEARNING);
+
+        Instant relearningCardDueDatetime = card.getDue();
+
+        // a full day after its next due date
+        Instant nextReviewDatetimeOneDayLate = relearningCardDueDatetime.plus(Duration.ofDays(1));
+
+        result = scheduler.reviewCard(card, Rating.GOOD, card.getDue());
+        card = result.card();
+
+        assertThat(card.getState()).isEqualTo(State.REVIEW);
+
+    }
+
+    
+
 }
