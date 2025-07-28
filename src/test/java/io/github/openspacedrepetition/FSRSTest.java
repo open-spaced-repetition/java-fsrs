@@ -574,6 +574,37 @@ public class FSRSTest {
     }
 
     @Test
+    public void testMaximumInterval() {
+
+        int maximumInterval = 100;
+
+        Scheduler scheduler = Scheduler.builder().maximumInterval(maximumInterval).build();
+
+        Card card = new Card.Builder().build();
+
+        CardAndReviewLog result = scheduler.reviewCard(card, Rating.EASY, card.getDue());
+        card = result.card();
+
+        assertThat(Duration.between(card.getLastReview(), card.getDue()).toDays())
+                .isLessThanOrEqualTo(scheduler.getMaximumInterval());
+
+        result = scheduler.reviewCard(card, Rating.GOOD, card.getDue());
+        card = result.card();
+        assertThat(Duration.between(card.getLastReview(), card.getDue()).toDays())
+                .isLessThanOrEqualTo(scheduler.getMaximumInterval());
+
+        result = scheduler.reviewCard(card, Rating.EASY, card.getDue());
+        card = result.card();
+        assertThat(Duration.between(card.getLastReview(), card.getDue()).toDays())
+                .isLessThanOrEqualTo(scheduler.getMaximumInterval());
+
+        result = scheduler.reviewCard(card, Rating.GOOD, card.getDue());
+        card = result.card();
+        assertThat(Duration.between(card.getLastReview(), card.getDue()).toDays())
+                .isLessThanOrEqualTo(scheduler.getMaximumInterval());
+    }
+
+    @Test
     public void testFuzz() {
 
         int randomSeedNumber1 = 42;
@@ -653,37 +684,6 @@ public class FSRSTest {
         int i = (int) Math.round(Duration.between(card.getLastReview(), card.getDue()).toDays());
         assertThat(i).isGreaterThanOrEqualTo(1);
 
-    }
-
-    @Test
-    public void testMaximumInterval() {
-
-        int maximumInterval = 100;
-
-        Scheduler scheduler = Scheduler.builder().maximumInterval(maximumInterval).build();
-
-        Card card = new Card.Builder().build();
-
-        CardAndReviewLog result = scheduler.reviewCard(card, Rating.EASY, card.getDue());
-        card = result.card();
-
-        assertThat(Duration.between(card.getLastReview(), card.getDue()).toDays())
-                .isLessThanOrEqualTo(scheduler.getMaximumInterval());
-
-        result = scheduler.reviewCard(card, Rating.GOOD, card.getDue());
-        card = result.card();
-        assertThat(Duration.between(card.getLastReview(), card.getDue()).toDays())
-                .isLessThanOrEqualTo(scheduler.getMaximumInterval());
-
-        result = scheduler.reviewCard(card, Rating.EASY, card.getDue());
-        card = result.card();
-        assertThat(Duration.between(card.getLastReview(), card.getDue()).toDays())
-                .isLessThanOrEqualTo(scheduler.getMaximumInterval());
-
-        result = scheduler.reviewCard(card, Rating.GOOD, card.getDue());
-        card = result.card();
-        assertThat(Duration.between(card.getLastReview(), card.getDue()).toDays())
-                .isLessThanOrEqualTo(scheduler.getMaximumInterval());
     }
 
     @Test
