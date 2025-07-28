@@ -164,7 +164,6 @@ public class Scheduler {
     public double getCardRetrievability(@NonNull Card card) {
 
         return getCardRetrievability(card, Instant.now());
-
     }
 
     private double clampStability(double stability) {
@@ -586,7 +585,8 @@ public class Scheduler {
 
                                 nextInterval =
                                         Duration.ofMillis(
-                                                Math.round(this.relearningSteps[0].toMillis() * 1.5));
+                                                Math.round(
+                                                        this.relearningSteps[0].toMillis() * 1.5));
 
                             } else if (card.getStep() == 0) {
 

@@ -21,19 +21,19 @@ public class FSRSTest {
         Scheduler scheduler = Scheduler.builder().enableFuzzing(false).build();
 
         Rating[] ratings = {
-                Rating.GOOD,
-                Rating.GOOD,
-                Rating.GOOD,
-                Rating.GOOD,
-                Rating.GOOD,
-                Rating.GOOD,
-                Rating.AGAIN,
-                Rating.AGAIN,
-                Rating.GOOD,
-                Rating.GOOD,
-                Rating.GOOD,
-                Rating.GOOD,
-                Rating.GOOD,
+            Rating.GOOD,
+            Rating.GOOD,
+            Rating.GOOD,
+            Rating.GOOD,
+            Rating.GOOD,
+            Rating.GOOD,
+            Rating.AGAIN,
+            Rating.AGAIN,
+            Rating.GOOD,
+            Rating.GOOD,
+            Rating.GOOD,
+            Rating.GOOD,
+            Rating.GOOD,
         };
 
         Card card = Card.builder().build();
@@ -66,19 +66,15 @@ public class FSRSTest {
 
             Instant reviewDatetime = Instant.parse("2022-11-29T12:30:00Z").plusNanos(i * 1000);
             reviewDatetimes.add(reviewDatetime);
-
         }
 
         for (Instant reviewDatetime : reviewDatetimes) {
 
             CardAndReviewLog result = scheduler.reviewCard(card, Rating.EASY, reviewDatetime);
             card = result.card();
-
         }
 
         assert card.getDifficulty() == 1.0;
-
-
     }
 
     @Test
@@ -86,18 +82,16 @@ public class FSRSTest {
 
         Scheduler scheduler = Scheduler.builder().build();
 
-        Rating[] ratings = {Rating.AGAIN,
-                Rating.GOOD,
-                Rating.GOOD,
-                Rating.GOOD,
-                Rating.GOOD,
-                Rating.GOOD,};
+        Rating[] ratings = {
+            Rating.AGAIN, Rating.GOOD, Rating.GOOD, Rating.GOOD, Rating.GOOD, Rating.GOOD,
+        };
 
         int[] ivlHistory = {0, 0, 1, 3, 8, 21};
 
         Card card = Card.builder().build();
 
-        Instant reviewDatetime = ZonedDateTime.of(2022, 11, 29, 12, 30, 0, 0, ZoneOffset.UTC).toInstant();
+        Instant reviewDatetime =
+                ZonedDateTime.of(2022, 11, 29, 12, 30, 0, 0, ZoneOffset.UTC).toInstant();
 
         for (int i = 0; i < ratings.length; i++) {
 
@@ -107,7 +101,6 @@ public class FSRSTest {
 
             CardAndReviewLog result = scheduler.reviewCard(card, rating, reviewDatetime);
             card = result.card();
-
         }
 
         CardAndReviewLog result = scheduler.reviewCard(card, Rating.GOOD, reviewDatetime);
@@ -115,7 +108,6 @@ public class FSRSTest {
 
         assertThat(card.getStability()).isCloseTo(49.4472, within(0.0001));
         assertThat(card.getDifficulty()).isCloseTo(6.8271, within(0.0001));
-
     }
 
     @Test
@@ -145,9 +137,6 @@ public class FSRSTest {
         Card card = Card.builder().build();
 
         assertThat(Instant.now()).isAfterOrEqualTo(card.getDue());
-
-
-
     }
 
     @Test
@@ -219,26 +208,32 @@ public class FSRSTest {
     @Test
     public void testCustomSchedulerArgs() {
 
-        Scheduler scheduler = Scheduler.builder().desiredRetention(0.9).maximumInterval(36500).enableFuzzing(false).build();
+        Scheduler scheduler =
+                Scheduler.builder()
+                        .desiredRetention(0.9)
+                        .maximumInterval(36500)
+                        .enableFuzzing(false)
+                        .build();
 
         Card card = Card.builder().build();
 
-        Instant reviewDatetime = ZonedDateTime.of(2022, 11, 29, 12, 30, 0, 0, ZoneOffset.UTC).toInstant();
+        Instant reviewDatetime =
+                ZonedDateTime.of(2022, 11, 29, 12, 30, 0, 0, ZoneOffset.UTC).toInstant();
 
         Rating[] ratings = {
-                Rating.GOOD,
-                Rating.GOOD,
-                Rating.GOOD,
-                Rating.GOOD,
-                Rating.GOOD,
-                Rating.GOOD,
-                Rating.AGAIN,
-                Rating.AGAIN,
-                Rating.GOOD,
-                Rating.GOOD,
-                Rating.GOOD,
-                Rating.GOOD,
-                Rating.GOOD,
+            Rating.GOOD,
+            Rating.GOOD,
+            Rating.GOOD,
+            Rating.GOOD,
+            Rating.GOOD,
+            Rating.GOOD,
+            Rating.AGAIN,
+            Rating.AGAIN,
+            Rating.GOOD,
+            Rating.GOOD,
+            Rating.GOOD,
+            Rating.GOOD,
+            Rating.GOOD,
         };
 
         List<Integer> ivlHistory = new ArrayList<>();
@@ -257,37 +252,22 @@ public class FSRSTest {
         assertThat(ivlHistory).isEqualTo(List.of(0, 4, 14, 45, 135, 372, 0, 0, 2, 5, 10, 20, 40));
 
         double[] parameters2 = {
-                0.1456,
-                0.4186,
-                1.1104,
-                4.1315,
-                5.2417,
-                1.3098,
-                0.8975,
-                0.0010,
-                1.5674,
-                0.0567,
-                0.9661,
-                2.0275,
-                0.1592,
-                0.2446,
-                1.5071,
-                0.2272,
-                2.8755,
-                1.234,
-                0.56789,
-                0.1437,
-                0.2,
+            0.1456, 0.4186, 1.1104, 4.1315, 5.2417, 1.3098, 0.8975, 0.0010, 1.5674, 0.0567, 0.9661,
+            2.0275, 0.1592, 0.2446, 1.5071, 0.2272, 2.8755, 1.234, 0.56789, 0.1437, 0.2,
         };
 
         double desiredRetention2 = 0.85;
         int maximumInterval2 = 3650;
-        Scheduler scheduler2 = Scheduler.builder().parameters(parameters2).desiredRetention(desiredRetention2).maximumInterval(maximumInterval2).build();
+        Scheduler scheduler2 =
+                Scheduler.builder()
+                        .parameters(parameters2)
+                        .desiredRetention(desiredRetention2)
+                        .maximumInterval(maximumInterval2)
+                        .build();
 
         assertThat(scheduler2.getParameters()).isEqualTo(parameters2);
         assertThat(scheduler2.getDesiredRetention()).isEqualTo(desiredRetention2);
         assertThat(scheduler2.getMaximumInterval()).isEqualTo(maximumInterval2);
-
     }
 
     @Test
@@ -319,7 +299,6 @@ public class FSRSTest {
         card = result.card();
         assertThat(card.getState()).isEqualTo(State.RELEARNING);
         assertThat(retrievability).isBetween(0.0, 1.0);
-
     }
 
     @Test
@@ -360,8 +339,6 @@ public class FSRSTest {
         card = result.card();
         assertThat(card.getState()).isEqualTo(State.REVIEW);
         assertThat(card.getStep()).isNull();
-
-
     }
 
     @Test
@@ -383,7 +360,6 @@ public class FSRSTest {
         assertThat(card.getStep()).isEqualTo(0);
         int i = (int) Math.round(Duration.between(createdAt, card.getDue()).toMinutes());
         assertThat(i).isEqualTo(1);
-
     }
 
     @Test
@@ -405,7 +381,6 @@ public class FSRSTest {
         assertThat(card.getStep()).isEqualTo(0);
         int i = (int) Math.round(Duration.between(createdAt, card.getDue()).toSeconds() / 10);
         assertThat(i).isEqualTo(33);
-
     }
 
     @Test
@@ -427,7 +402,6 @@ public class FSRSTest {
         assertThat(card.getStep()).isNull();
         int i = (int) Math.round(Duration.between(createdAt, card.getDue()).toDays());
         assertThat(i).isGreaterThanOrEqualTo(1);
-
     }
 
     @Test
@@ -464,7 +438,6 @@ public class FSRSTest {
         assertThat(card.getState()).isEqualTo(State.RELEARNING);
         i = (int) Math.round(Duration.between(prevDue, card.getDue()).toMinutes());
         assertThat(i).isGreaterThanOrEqualTo(10);
-
     }
 
     @Test
@@ -513,7 +486,6 @@ public class FSRSTest {
         assertThat(card.getStep()).isNull();
         i = (int) Math.round(Duration.between(prevDue, card.getDue()).toDays());
         assertThat(i).isGreaterThanOrEqualTo(1);
-
     }
 
     @Test
@@ -572,7 +544,6 @@ public class FSRSTest {
         assertThat(card.getState()).isEqualTo(State.REVIEW);
         int i = (int) Math.round(Duration.between(card.getLastReview(), card.getDue()).toDays());
         assertThat(i).isGreaterThanOrEqualTo(1);
-
     }
 
     @Test
@@ -595,25 +566,37 @@ public class FSRSTest {
 
         int i = (int) Math.round(Duration.between(card.getLastReview(), card.getDue()).toDays());
         assertThat(i).isGreaterThanOrEqualTo(1);
-
     }
 
     @Test
     public void testOneCardMultipleSchedulers() {
 
-        Scheduler schedulerWithTwoLearningSteps = Scheduler.builder().learningSteps(new Duration[]{Duration.ofMinutes(1), Duration.ofMinutes(10)}).build();
-        Scheduler schedulerWithOneLearningStep = Scheduler.builder().learningSteps(new Duration[]{Duration.ofMinutes(1)}).build();
-        Scheduler schedulerWithNoLearningSteps = Scheduler.builder().learningSteps(new Duration[]{}).build();
+        Scheduler schedulerWithTwoLearningSteps =
+                Scheduler.builder()
+                        .learningSteps(
+                                new Duration[] {Duration.ofMinutes(1), Duration.ofMinutes(10)})
+                        .build();
+        Scheduler schedulerWithOneLearningStep =
+                Scheduler.builder().learningSteps(new Duration[] {Duration.ofMinutes(1)}).build();
+        Scheduler schedulerWithNoLearningSteps =
+                Scheduler.builder().learningSteps(new Duration[] {}).build();
 
-        Scheduler schedulerWithTwoRelearningSteps = Scheduler.builder().relearningSteps(new Duration[]{Duration.ofMinutes(1), Duration.ofMinutes(10)}).build();
-        Scheduler schedulerWithOneRelearningStep = Scheduler.builder().relearningSteps(new Duration[]{Duration.ofMinutes(1)}).build();
-        Scheduler schedulerWithNoRelearningSteps = Scheduler.builder().relearningSteps(new Duration[]{}).build();
+        Scheduler schedulerWithTwoRelearningSteps =
+                Scheduler.builder()
+                        .relearningSteps(
+                                new Duration[] {Duration.ofMinutes(1), Duration.ofMinutes(10)})
+                        .build();
+        Scheduler schedulerWithOneRelearningStep =
+                Scheduler.builder().relearningSteps(new Duration[] {Duration.ofMinutes(1)}).build();
+        Scheduler schedulerWithNoRelearningSteps =
+                Scheduler.builder().relearningSteps(new Duration[] {}).build();
 
         Card card = Card.builder().build();
 
         // learning-state tests
         assertThat(schedulerWithTwoLearningSteps.getLearningSteps().length).isEqualTo(2);
-        CardAndReviewLog result = schedulerWithTwoLearningSteps.reviewCard(card, Rating.GOOD, Instant.now());
+        CardAndReviewLog result =
+                schedulerWithTwoLearningSteps.reviewCard(card, Rating.GOOD, Instant.now());
         card = result.card();
         assertThat(card.getState()).isEqualTo(State.LEARNING);
         assertThat(card.getStep()).isEqualTo(1);
@@ -652,7 +635,6 @@ public class FSRSTest {
         card = result.card();
         assertThat(card.getState()).isEqualTo(State.REVIEW);
         assertThat(card.getStep()).isNull();
-
     }
 
     @Test
@@ -714,12 +696,12 @@ public class FSRSTest {
 
         for (int i = 0; i < 1000; i++) {
 
-            CardAndReviewLog result = scheduler.reviewCard(card, Rating.AGAIN, card.getDue().plus(Duration.ofDays(1)));
+            CardAndReviewLog result =
+                    scheduler.reviewCard(
+                            card, Rating.AGAIN, card.getDue().plus(Duration.ofDays(1)));
             card = result.card();
             assertThat(card.getStability()).isGreaterThanOrEqualTo(Scheduler.STABILITY_MIN);
-
         }
-
     }
 
     @Test
@@ -757,13 +739,15 @@ public class FSRSTest {
 
         Duration firstLearningStep = Duration.ofMinutes(10);
 
-        Scheduler schedulerWithOneLearningStep = Scheduler.builder().learningSteps(new Duration[]{firstLearningStep}).build();
+        Scheduler schedulerWithOneLearningStep =
+                Scheduler.builder().learningSteps(new Duration[] {firstLearningStep}).build();
 
         Card card = Card.builder().build();
 
         Instant initialDueDatetime = card.getDue();
 
-        CardAndReviewLog result = schedulerWithOneLearningStep.reviewCard(card, Rating.HARD, card.getDue());
+        CardAndReviewLog result =
+                schedulerWithOneLearningStep.reviewCard(card, Rating.HARD, card.getDue());
         card = result.card();
 
         assertThat(card.getState()).isEqualTo(State.LEARNING);
@@ -778,7 +762,6 @@ public class FSRSTest {
         System.out.println("EXPECTED: " + expectedIntervalLength);
 
         assertThat(intervalLength).isEqualTo(expectedIntervalLength);
-
     }
 
     @Test
@@ -787,14 +770,18 @@ public class FSRSTest {
         Duration firstLearningStep = Duration.ofMinutes(1);
         Duration secondLearningStep = Duration.ofMinutes(10);
 
-        Scheduler schedulerWithTwoLearningSteps = Scheduler.builder().learningSteps(new Duration[]{firstLearningStep, secondLearningStep}).build();
+        Scheduler schedulerWithTwoLearningSteps =
+                Scheduler.builder()
+                        .learningSteps(new Duration[] {firstLearningStep, secondLearningStep})
+                        .build();
 
         Card card = Card.builder().build();
 
         assertThat(card.getState()).isEqualTo(State.LEARNING);
         assertThat(card.getStep()).isEqualTo(0);
 
-        CardAndReviewLog result = schedulerWithTwoLearningSteps.reviewCard(card, Rating.GOOD, card.getDue());
+        CardAndReviewLog result =
+                schedulerWithTwoLearningSteps.reviewCard(card, Rating.GOOD, card.getDue());
         card = result.card();
 
         assertThat(card.getState()).isEqualTo(State.LEARNING);
@@ -802,7 +789,9 @@ public class FSRSTest {
 
         Instant dueDatetimeAfterFirstReview = card.getDue();
 
-        result = schedulerWithTwoLearningSteps.reviewCard(card, Rating.HARD, dueDatetimeAfterFirstReview);
+        result =
+                schedulerWithTwoLearningSteps.reviewCard(
+                        card, Rating.HARD, dueDatetimeAfterFirstReview);
         card = result.card();
 
         Instant dueDatetimeAfterSecondReview = card.getDue();
@@ -810,12 +799,13 @@ public class FSRSTest {
         assertThat(card.getState()).isEqualTo(State.LEARNING);
         assertThat(card.getStep()).isEqualTo(1);
 
-        double intervalLength = Duration.between(dueDatetimeAfterFirstReview, dueDatetimeAfterSecondReview).toMinutes();
+        double intervalLength =
+                Duration.between(dueDatetimeAfterFirstReview, dueDatetimeAfterSecondReview)
+                        .toMinutes();
 
         double expectedIntervalLength = secondLearningStep.toMinutes();
 
         assertThat(intervalLength).isEqualTo(expectedIntervalLength);
-
     }
 
     @Test
@@ -850,7 +840,6 @@ public class FSRSTest {
         card = result.card();
 
         assertThat(card.getState()).isEqualTo(State.REVIEW);
-
     }
 
     @Test
@@ -858,11 +847,13 @@ public class FSRSTest {
 
         Duration firstLearningStep = Duration.ofMinutes(10);
 
-        Scheduler schedulerWithOneRelearningStep = Scheduler.builder().relearningSteps(new Duration[]{firstLearningStep}).build();
+        Scheduler schedulerWithOneRelearningStep =
+                Scheduler.builder().relearningSteps(new Duration[] {firstLearningStep}).build();
 
         Card card = Card.builder().build();
 
-        CardAndReviewLog result = schedulerWithOneRelearningStep.reviewCard(card, Rating.EASY, card.getDue());
+        CardAndReviewLog result =
+                schedulerWithOneRelearningStep.reviewCard(card, Rating.EASY, card.getDue());
         card = result.card();
 
         assertThat(card.getState()).isEqualTo(State.REVIEW);
@@ -888,7 +879,6 @@ public class FSRSTest {
         double expectedIntervalLength = firstLearningStep.toMinutes() * 1.5;
 
         assertThat(intervalLength).isEqualTo(expectedIntervalLength);
-
     }
 
     @Test
@@ -897,11 +887,15 @@ public class FSRSTest {
         Duration firstRelearningStep = Duration.ofMinutes(1);
         Duration secondRelearningStep = Duration.ofMinutes(10);
 
-        Scheduler schedulerWithTwoRelearningSteps = Scheduler.builder().relearningSteps(new Duration[]{firstRelearningStep, secondRelearningStep}).build();
+        Scheduler schedulerWithTwoRelearningSteps =
+                Scheduler.builder()
+                        .relearningSteps(new Duration[] {firstRelearningStep, secondRelearningStep})
+                        .build();
 
         Card card = Card.builder().build();
 
-        CardAndReviewLog result = schedulerWithTwoRelearningSteps.reviewCard(card, Rating.EASY, card.getDue());
+        CardAndReviewLog result =
+                schedulerWithTwoRelearningSteps.reviewCard(card, Rating.EASY, card.getDue());
         card = result.card();
 
         assertThat(card.getState()).isEqualTo(State.REVIEW);
@@ -924,7 +918,8 @@ public class FSRSTest {
 
         double intervalLength = Duration.between(prevDueDatetime, newDueDatetime).toSeconds();
 
-        double expectedIntervalLength = (firstRelearningStep.plus(secondRelearningStep)).toSeconds() / 2.0;
+        double expectedIntervalLength =
+                (firstRelearningStep.plus(secondRelearningStep)).toSeconds() / 2.0;
 
         assertThat(intervalLength).isEqualTo(expectedIntervalLength);
 
@@ -955,7 +950,5 @@ public class FSRSTest {
 
         assertThat(card.getState()).isEqualTo(State.REVIEW);
         assertThat(card.getStep()).isNull();
-
     }
-
 }
