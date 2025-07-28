@@ -853,6 +853,42 @@ public class FSRSTest {
 
     }
 
-    
+    @Test
+    public void testRelearningCardRateHardOneRelearningStep() {
+
+        Duration firstLearningStep = Duration.ofMinutes(10);
+
+        Scheduler schedulerWithOneRelearningStep = Scheduler.builder().relearningSteps(new Duration[]{firstLearningStep}).build();
+
+        Card card = Card.builder().build();
+
+        CardAndReviewLog result = schedulerWithOneRelearningStep.reviewCard(card, Rating.EASY, card.getDue());
+        card = result.card();
+
+        assertThat(card.getState()).isEqualTo(State.REVIEW);
+
+        result = schedulerWithOneRelearningStep.reviewCard(card, Rating.AGAIN, card.getDue());
+        card = result.card();
+
+        assertThat(card.getState()).isEqualTo(State.RELEARNING);
+        assertThat(card.getStep()).isEqualTo(0);
+
+        Instant prevDueDatetime = card.getDue();
+
+        result = schedulerWithOneRelearningStep.reviewCard(card, Rating.HARD, card.getDue());
+        card = result.card();
+
+        assertThat(card.getState()).isEqualTo(State.RELEARNING);
+        assertThat(card.getStep()).isEqualTo(0);
+
+        Instant newDueDatetime = card.getDue();
+
+        double intervalLength = Duration.between(prevDueDatetime, newDueDatetime).toMinutes();
+
+        double expectedIntervalLength = firstLearningStep.toMinutes() * 1.5;
+
+        assertThat(intervalLength).isEqualTo(expectedIntervalLength);
+
+    }
 
 }
