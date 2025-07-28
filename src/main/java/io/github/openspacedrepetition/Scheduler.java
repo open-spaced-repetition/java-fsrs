@@ -38,7 +38,7 @@ public class Scheduler {
     private static final int DEFAULT_MAXIMUM_INTERVAL = 36500;
     private static final boolean DEFAULT_ENABLE_FUZZING = true;
     private static final int DEFAULT_RANDOM_SEED_NUMBER = 42;
-    private static final double STABILITY_MIN = 0.001;
+    public static final double STABILITY_MIN = 0.001;
     private static final double MIN_DIFFICULTY = 1.0;
     private static final double MAX_DIFFICULTY = 10.0;
 
