@@ -512,7 +512,7 @@ public class Scheduler {
                 int nextIntervalDays;
                 switch (rating) {
                     case AGAIN -> {
-                        if (this.learningSteps.length == 0) {
+                        if (this.relearningSteps.length == 0) {
 
                             nextIntervalDays = nextInterval(card.getStability());
                             nextInterval = Duration.ofDays(nextIntervalDays);
