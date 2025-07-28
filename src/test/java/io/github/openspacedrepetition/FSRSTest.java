@@ -605,6 +605,26 @@ public class FSRSTest {
     }
 
     @Test
+    public void testUniqueCardIds() {
+
+        List<Integer> cardIds = new ArrayList<Integer>();
+
+        Card card;
+        int cardId;
+        for (int i = 1; i < 1000; i++) {
+
+            card = Card.builder().build();
+            cardId = card.getCardId();
+            cardIds.add(cardId);
+        }
+
+        int totalCountCardIds = cardIds.size();
+        int uniqueCountCardIds = new HashSet<>(cardIds).size();
+
+        assertThat(uniqueCountCardIds).isEqualTo(totalCountCardIds);
+    }
+
+    @Test
     public void testFuzz() {
 
         int randomSeedNumber1 = 42;
@@ -716,23 +736,4 @@ public class FSRSTest {
         assertThat(reviewLogReview1).isNotEqualTo(reviewLogReview2);
     }
 
-    @Test
-    public void testUniqueCardIds() {
-
-        List<Integer> cardIds = new ArrayList<Integer>();
-
-        Card card;
-        int cardId;
-        for (int i = 1; i < 1000; i++) {
-
-            card = Card.builder().build();
-            cardId = card.getCardId();
-            cardIds.add(cardId);
-        }
-
-        int totalCountCardIds = cardIds.size();
-        int uniqueCountCardIds = new HashSet<>(cardIds).size();
-
-        assertThat(uniqueCountCardIds).isEqualTo(totalCountCardIds);
-    }
 }
