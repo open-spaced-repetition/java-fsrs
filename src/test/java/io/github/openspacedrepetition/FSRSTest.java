@@ -217,6 +217,80 @@ public class FSRSTest {
     }
 
     @Test
+    public void testCustomSchedulerArgs() {
+
+        Scheduler scheduler = Scheduler.builder().desiredRetention(0.9).maximumInterval(36500).enableFuzzing(false).build();
+
+        Card card = Card.builder().build();
+
+        Instant reviewDatetime = ZonedDateTime.of(2022, 11, 29, 12, 30, 0, 0, ZoneOffset.UTC).toInstant();
+
+        Rating[] ratings = {
+                Rating.GOOD,
+                Rating.GOOD,
+                Rating.GOOD,
+                Rating.GOOD,
+                Rating.GOOD,
+                Rating.GOOD,
+                Rating.AGAIN,
+                Rating.AGAIN,
+                Rating.GOOD,
+                Rating.GOOD,
+                Rating.GOOD,
+                Rating.GOOD,
+                Rating.GOOD,
+        };
+
+        List<Integer> ivlHistory = new ArrayList<>();
+
+        for (Rating rating : ratings) {
+
+            CardAndReviewLog result = scheduler.reviewCard(card, rating, reviewDatetime);
+            card = result.card();
+
+            int ivl = (int) ChronoUnit.DAYS.between(card.getLastReview(), card.getDue());
+            ivlHistory.add(ivl);
+
+            reviewDatetime = card.getDue();
+        }
+
+        assertThat(ivlHistory).isEqualTo(List.of(0, 4, 14, 45, 135, 372, 0, 0, 2, 5, 10, 20, 40));
+
+        double[] parameters2 = {
+                0.1456,
+                0.4186,
+                1.1104,
+                4.1315,
+                5.2417,
+                1.3098,
+                0.8975,
+                0.0010,
+                1.5674,
+                0.0567,
+                0.9661,
+                2.0275,
+                0.1592,
+                0.2446,
+                1.5071,
+                0.2272,
+                2.8755,
+                1.234,
+                0.56789,
+                0.1437,
+                0.2,
+        };
+
+        double desiredRetention2 = 0.85;
+        int maximumInterval2 = 3650;
+        Scheduler scheduler2 = Scheduler.builder().parameters(parameters2).desiredRetention(desiredRetention2).maximumInterval(maximumInterval2).build();
+
+        assertThat(scheduler2.getParameters()).isEqualTo(parameters2);
+        assertThat(scheduler2.getDesiredRetention()).isEqualTo(desiredRetention2);
+        assertThat(scheduler2.getMaximumInterval()).isEqualTo(maximumInterval2);
+
+    }
+
+    @Test
     public void testMaximumInterval() {
 
         int maximumInterval = 100;
