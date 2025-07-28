@@ -291,6 +291,38 @@ public class FSRSTest {
     }
 
     @Test
+    public void testRetrievability() {
+
+        Scheduler scheduler = Scheduler.builder().build();
+
+        Card card = Card.builder().build();
+
+        // retrievability of a new card
+        assertThat(card.getState()).isEqualTo(State.LEARNING);
+        double retrievability = scheduler.getCardRetrievability(card);
+        assertThat(retrievability).isEqualTo(0);
+
+        // retrievability of a learning card
+        CardAndReviewLog result = scheduler.reviewCard(card, Rating.GOOD);
+        card = result.card();
+        assertThat(card.getState()).isEqualTo(State.LEARNING);
+        assertThat(retrievability).isBetween(0.0, 1.0);
+
+        // retrievability of a review card
+        result = scheduler.reviewCard(card, Rating.GOOD);
+        card = result.card();
+        assertThat(card.getState()).isEqualTo(State.REVIEW);
+        assertThat(retrievability).isBetween(0.0, 1.0);
+
+        // retrievability of a relearning card
+        result = scheduler.reviewCard(card, Rating.AGAIN);
+        card = result.card();
+        assertThat(card.getState()).isEqualTo(State.RELEARNING);
+        assertThat(retrievability).isBetween(0.0, 1.0);
+
+    }
+
+    @Test
     public void testMaximumInterval() {
 
         int maximumInterval = 100;
