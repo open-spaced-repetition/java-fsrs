@@ -625,6 +625,22 @@ public class FSRSTest {
     }
 
     @Test
+    public void testStabilityLowerBound() {
+
+        Scheduler scheduler = Scheduler.builder().build();
+        Card card = Card.builder().build();
+
+        for (int i = 0; i < 1000; i++) {
+
+            CardAndReviewLog result = scheduler.reviewCard(card, Rating.AGAIN, card.getDue().plus(Duration.ofDays(1)));
+            card = result.card();
+            assertThat(card.getStability()).isGreaterThanOrEqualTo(Scheduler.STABILITY_MIN);
+
+        }
+
+    }
+
+    @Test
     public void testFuzz() {
 
         int randomSeedNumber1 = 42;
