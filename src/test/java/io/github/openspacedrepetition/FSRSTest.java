@@ -758,9 +758,6 @@ public class FSRSTest {
 
         double expectedIntervalLength = firstLearningStep.toMinutes() * 1.5;
 
-        System.out.println("ACTUAL: " + intervalLength);
-        System.out.println("EXPECTED: " + expectedIntervalLength);
-
         assertThat(intervalLength).isEqualTo(expectedIntervalLength);
     }
 
