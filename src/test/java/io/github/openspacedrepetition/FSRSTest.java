@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Nested;
 
 public class FSRSTest {
 
@@ -139,70 +140,90 @@ public class FSRSTest {
         assertThat(Instant.now()).isAfterOrEqualTo(card.getDue());
     }
 
-    @Test
-    void testCardSerialize() {
+    @Nested
+    @DisplayName("Serialization")
+    class SerializationTests {
 
-        Scheduler scheduler = Scheduler.builder().build();
+        @Test
+        void testReviewLogSerialize() {
 
-        Card card = Card.builder().build();
+            Scheduler scheduler = Scheduler.builder().build();
+            Card card = Card.builder().build();
 
-        assertThat(card.toJson()).isInstanceOf(String.class);
+            Rating rating = Rating.AGAIN;
+            CardAndReviewLog result = scheduler.reviewCard(card, rating);
+            card = result.card();
+            ReviewLog reviewLog = result.reviewLog();
 
-        String cardJson = card.toJson();
-        Card copiedCard = Card.fromJson(cardJson);
-        assertThat(card).isEqualTo(copiedCard);
-        assertThat(card.toJson()).isEqualTo(copiedCard.toJson());
+            assertThat(reviewLog.toJson()).isInstanceOf(String.class);
 
-        CardAndReviewLog result = scheduler.reviewCard(card, Rating.GOOD);
-        Card reviewedCard = result.card();
-        ReviewLog reviewLog = result.reviewLog();
+            // we can reconstruct a copy of the ReviewLog object equivalent to the original
+            String reviewLogJson = reviewLog.toJson();
+            ReviewLog copiedReviewLog = ReviewLog.fromJson(reviewLogJson);
+            assertThat(reviewLog).isEqualTo(copiedReviewLog);
+            assertThat(reviewLog.toJson()).isEqualTo(copiedReviewLog.toJson());
 
-        assertThat(reviewedCard.toJson()).isInstanceOf(String.class);
+            // (x2) perform the above tests once more with a ReviewLog from a reviewed Card
+            rating = Rating.GOOD;
+            result = scheduler.reviewCard(card, rating);
+            ReviewLog nextReviewLog = result.reviewLog();
 
-        String reviewedCardJson = reviewedCard.toJson();
-        Card copiedReviewedCard = Card.fromJson(reviewedCardJson);
-        assertThat(reviewedCard).isEqualTo(copiedReviewedCard);
-        assertThat(reviewedCard.toJson()).isEqualTo(copiedReviewedCard.toJson());
+            assertThat(reviewLog.toJson()).isInstanceOf(String.class);
 
-        // original card and reviewed card are different
-        assertThat(card).isNotEqualTo(reviewedCard);
-        assertThat(card.toJson()).isNotEqualTo(reviewedCard.toJson());
-    }
+            String nextReviewLogJson = nextReviewLog.toJson();
+            ReviewLog copiedNextReviewLog = ReviewLog.fromJson(nextReviewLogJson);
+            assertThat(nextReviewLog).isEqualTo(copiedNextReviewLog);
+            assertThat(nextReviewLog.toJson()).isEqualTo(copiedNextReviewLog.toJson());
 
-    @Test
-    void testReviewLogSerialize() {
+            // original review log and next review log are different
+            assertThat(reviewLog).isNotEqualTo(nextReviewLog);
+            assertThat(reviewLog.toJson()).isNotEqualTo(nextReviewLog.toJson());
+        }
 
-        Scheduler scheduler = Scheduler.builder().build();
-        Card card = Card.builder().build();
+        @Test
+        void testCardSerialize() {
 
-        Rating rating = Rating.AGAIN;
-        CardAndReviewLog result = scheduler.reviewCard(card, rating);
-        card = result.card();
-        ReviewLog reviewLog = result.reviewLog();
+            Scheduler scheduler = Scheduler.builder().build();
 
-        assertThat(reviewLog.toJson()).isInstanceOf(String.class);
+            Card card = Card.builder().build();
 
-        // we can reconstruct a copy of the ReviewLog object equivalent to the original
-        String reviewLogJson = reviewLog.toJson();
-        ReviewLog copiedReviewLog = ReviewLog.fromJson(reviewLogJson);
-        assertThat(reviewLog).isEqualTo(copiedReviewLog);
-        assertThat(reviewLog.toJson()).isEqualTo(copiedReviewLog.toJson());
+            assertThat(card.toJson()).isInstanceOf(String.class);
 
-        // (x2) perform the above tests once more with a ReviewLog from a reviewed Card
-        rating = Rating.GOOD;
-        result = scheduler.reviewCard(card, rating);
-        ReviewLog nextReviewLog = result.reviewLog();
+            String cardJson = card.toJson();
+            Card copiedCard = Card.fromJson(cardJson);
+            assertThat(card).isEqualTo(copiedCard);
+            assertThat(card.toJson()).isEqualTo(copiedCard.toJson());
 
-        assertThat(reviewLog.toJson()).isInstanceOf(String.class);
+            CardAndReviewLog result = scheduler.reviewCard(card, Rating.GOOD);
+            Card reviewedCard = result.card();
+            ReviewLog reviewLog = result.reviewLog();
 
-        String nextReviewLogJson = nextReviewLog.toJson();
-        ReviewLog copiedNextReviewLog = ReviewLog.fromJson(nextReviewLogJson);
-        assertThat(nextReviewLog).isEqualTo(copiedNextReviewLog);
-        assertThat(nextReviewLog.toJson()).isEqualTo(copiedNextReviewLog.toJson());
+            assertThat(reviewedCard.toJson()).isInstanceOf(String.class);
 
-        // original review log and next review log are different
-        assertThat(reviewLog).isNotEqualTo(nextReviewLog);
-        assertThat(reviewLog.toJson()).isNotEqualTo(nextReviewLog.toJson());
+            String reviewedCardJson = reviewedCard.toJson();
+            Card copiedReviewedCard = Card.fromJson(reviewedCardJson);
+            assertThat(reviewedCard).isEqualTo(copiedReviewedCard);
+            assertThat(reviewedCard.toJson()).isEqualTo(copiedReviewedCard.toJson());
+
+            // original card and reviewed card are different
+            assertThat(card).isNotEqualTo(reviewedCard);
+            assertThat(card.toJson()).isNotEqualTo(reviewedCard.toJson());
+        }
+
+        @Test
+        void testSchedulerSerialize() {
+
+            Scheduler scheduler = Scheduler.builder().build();
+
+            assertThat(scheduler.toJson()).isInstanceOf(String.class);
+
+            String schedulerJson = scheduler.toJson();
+            Scheduler copiedScheduler = Scheduler.fromJson(schedulerJson);
+            assertThat(scheduler).isEqualTo(copiedScheduler);
+            assertThat(scheduler.toJson()).isEqualTo(copiedScheduler.toJson());
+        }
+
+
     }
 
     @Test
@@ -299,19 +320,6 @@ public class FSRSTest {
         card = result.card();
         assertThat(card.getState()).isEqualTo(State.RELEARNING);
         assertThat(retrievability).isBetween(0.0, 1.0);
-    }
-
-    @Test
-    void testSchedulerSerialize() {
-
-        Scheduler scheduler = Scheduler.builder().build();
-
-        assertThat(scheduler.toJson()).isInstanceOf(String.class);
-
-        String schedulerJson = scheduler.toJson();
-        Scheduler copiedScheduler = Scheduler.fromJson(schedulerJson);
-        assertThat(scheduler).isEqualTo(copiedScheduler);
-        assertThat(scheduler.toJson()).isEqualTo(copiedScheduler.toJson());
     }
 
     @Test
