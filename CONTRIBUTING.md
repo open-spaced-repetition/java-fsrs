@@ -1,29 +1,22 @@
-## Local development
+# Contributing to Java-FSRS
 
-### Install library locally
+## Reporting issues
 
+If you encounter an issue with Java-FSRS and would like to report it, you'll first want to make sure you're using the latest version of Java-FSRS.
+
+The latest version of java-fsrs can be found under [releases](https://github.com/open-spaced-repetition/java-fsrs/releases).
+
+Once you've confirmed that you're using the latest version, please report your issue in the [issues tab](https://github.com/open-spaced-repetition/java-fsrs/issues).
+
+## Contributing code
+
+### Pass the tests
+
+In order for you contribution to be accepted, your code must pass the unit tests.
+
+Run the tests with:
 ```bash
-mvn clean install
+./gradlew test jacocoTestReport
 ```
 
-### Test the package
-
-```bash
-mvn test
-```
-
-### Format package code
-
-```bash
-mvn spotless:apply
-```
-
-### Add as dependency
-
-```xml
-  <dependency>
-    <groupId>io.github.open-spaced-repetition</groupId>
-    <artifactId>fsrs</artifactId>
-    <version>0.1.0</version>
-  </dependency>
-```
+Additionally, you are strongly encouraged to contribute your own tests to [src/test/](src/test/) to help make Java-FSRS more reliable.
