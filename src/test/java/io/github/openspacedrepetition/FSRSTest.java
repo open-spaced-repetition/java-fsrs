@@ -16,7 +16,7 @@ import org.junit.jupiter.api.*;
 public class FSRSTest {
 
     @Test
-    public void testReviewCard() {
+    void testReviewCard() {
 
         Scheduler scheduler = Scheduler.builder().enableFuzzing(false).build();
 
@@ -54,7 +54,7 @@ public class FSRSTest {
     }
 
     @Test
-    public void testRepeatedCorrectReviews() {
+    void testRepeatedCorrectReviews() {
 
         Scheduler scheduler = Scheduler.builder().enableFuzzing(false).build();
 
@@ -78,7 +78,7 @@ public class FSRSTest {
     }
 
     @Test
-    public void testMemoState() {
+    void testMemoState() {
 
         Scheduler scheduler = Scheduler.builder().build();
 
@@ -111,7 +111,7 @@ public class FSRSTest {
     }
 
     @Test
-    public void testReviewDefaultArg() {
+    void testReviewDefaultArg() {
 
         Scheduler scheduler = Scheduler.builder().build();
 
@@ -131,7 +131,7 @@ public class FSRSTest {
     }
 
     @Test
-    public void testDatetime() {
+    void testDatetime() {
 
         Scheduler scheduler = Scheduler.builder().build();
         Card card = Card.builder().build();
@@ -140,7 +140,7 @@ public class FSRSTest {
     }
 
     @Test
-    public void testCardSerialize() {
+    void testCardSerialize() {
 
         Scheduler scheduler = Scheduler.builder().build();
 
@@ -170,7 +170,7 @@ public class FSRSTest {
     }
 
     @Test
-    public void testReviewLogSerialize() {
+    void testReviewLogSerialize() {
 
         Scheduler scheduler = Scheduler.builder().build();
         Card card = Card.builder().build();
@@ -206,7 +206,7 @@ public class FSRSTest {
     }
 
     @Test
-    public void testCustomSchedulerArgs() {
+    void testCustomSchedulerArgs() {
 
         Scheduler scheduler =
                 Scheduler.builder()
@@ -271,7 +271,7 @@ public class FSRSTest {
     }
 
     @Test
-    public void testRetrievability() {
+    void testRetrievability() {
 
         Scheduler scheduler = Scheduler.builder().build();
 
@@ -302,7 +302,7 @@ public class FSRSTest {
     }
 
     @Test
-    public void testSchedulerSerialize() {
+    void testSchedulerSerialize() {
 
         Scheduler scheduler = Scheduler.builder().build();
 
@@ -315,7 +315,7 @@ public class FSRSTest {
     }
 
     @Test
-    public void testGoodLearningSteps() {
+    void testGoodLearningSteps() {
 
         Scheduler scheduler = Scheduler.builder().build();
 
@@ -342,7 +342,7 @@ public class FSRSTest {
     }
 
     @Test
-    public void testAgainLearningSteps() {
+    void testAgainLearningSteps() {
 
         Scheduler scheduler = Scheduler.builder().build();
 
@@ -363,7 +363,7 @@ public class FSRSTest {
     }
 
     @Test
-    public void testHardLearningSteps() {
+    void testHardLearningSteps() {
 
         Scheduler scheduler = Scheduler.builder().build();
 
@@ -384,7 +384,7 @@ public class FSRSTest {
     }
 
     @Test
-    public void testEasyLearningSteps() {
+    void testEasyLearningSteps() {
 
         Scheduler scheduler = Scheduler.builder().build();
 
@@ -405,7 +405,7 @@ public class FSRSTest {
     }
 
     @Test
-    public void testReviewState() {
+    void testReviewState() {
 
         Scheduler scheduler = Scheduler.builder().enableFuzzing(false).build();
         Card card = Card.builder().build();
@@ -441,7 +441,7 @@ public class FSRSTest {
     }
 
     @Test
-    public void testRelearning() {
+    void testRelearning() {
 
         Scheduler scheduler = Scheduler.builder().enableFuzzing(false).build();
         Card card = Card.builder().build();
@@ -489,7 +489,7 @@ public class FSRSTest {
     }
 
     @Test
-    public void testFuzz() {
+    void testFuzz() {
 
         int randomSeedNumber1 = 42;
 
@@ -531,7 +531,7 @@ public class FSRSTest {
     }
 
     @Test
-    public void testNoLearningSteps() {
+    void testNoLearningSteps() {
 
         Scheduler scheduler = Scheduler.builder().learningSteps(new Duration[] {}).build();
 
@@ -547,7 +547,7 @@ public class FSRSTest {
     }
 
     @Test
-    public void testNoRelearningSteps() {
+    void testNoRelearningSteps() {
 
         Scheduler scheduler = Scheduler.builder().relearningSteps(new Duration[] {}).build();
 
@@ -569,7 +569,7 @@ public class FSRSTest {
     }
 
     @Test
-    public void testOneCardMultipleSchedulers() {
+    void testOneCardMultipleSchedulers() {
 
         Scheduler schedulerWithTwoLearningSteps =
                 Scheduler.builder()
@@ -638,7 +638,7 @@ public class FSRSTest {
     }
 
     @Test
-    public void testMaximumInterval() {
+    void testMaximumInterval() {
 
         int maximumInterval = 100;
 
@@ -669,7 +669,7 @@ public class FSRSTest {
     }
 
     @Test
-    public void testUniqueCardIds() {
+    void testUniqueCardIds() {
 
         List<Integer> cardIds = new ArrayList<Integer>();
 
@@ -689,7 +689,7 @@ public class FSRSTest {
     }
 
     @Test
-    public void testStabilityLowerBound() {
+    void testStabilityLowerBound() {
 
         Scheduler scheduler = Scheduler.builder().build();
         Card card = Card.builder().build();
@@ -705,7 +705,7 @@ public class FSRSTest {
     }
 
     @Test
-    public void testEqualsMethods() {
+    void testEqualsMethods() {
 
         Scheduler scheduler1 = Scheduler.builder().build();
         Scheduler scheduler2 = Scheduler.builder().desiredRetention(0.91).build();
@@ -735,7 +735,7 @@ public class FSRSTest {
     }
 
     @Test
-    public void testLearningCardRateHardOneLearningStep() {
+    void testLearningCardRateHardOneLearningStep() {
 
         Duration firstLearningStep = Duration.ofMinutes(10);
 
@@ -765,7 +765,7 @@ public class FSRSTest {
     }
 
     @Test
-    public void testLearningCardRateHardSecondLearningStep() {
+    void testLearningCardRateHardSecondLearningStep() {
 
         Duration firstLearningStep = Duration.ofMinutes(1);
         Duration secondLearningStep = Duration.ofMinutes(10);
@@ -809,7 +809,7 @@ public class FSRSTest {
     }
 
     @Test
-    public void testLongTermStabilityLearningState() {
+    void testLongTermStabilityLearningState() {
         /*
         NOTE: currently, this test is mostly to make sure that
         the unit tests cover the case when a card in the relearning state
@@ -843,7 +843,7 @@ public class FSRSTest {
     }
 
     @Test
-    public void testRelearningCardRateHardOneRelearningStep() {
+    void testRelearningCardRateHardOneRelearningStep() {
 
         Duration firstLearningStep = Duration.ofMinutes(10);
 
@@ -882,7 +882,7 @@ public class FSRSTest {
     }
 
     @Test
-    public void testRelearningCardRateHardTwoRelearningSteps() {
+    void testRelearningCardRateHardTwoRelearningSteps() {
 
         Duration firstRelearningStep = Duration.ofMinutes(1);
         Duration secondRelearningStep = Duration.ofMinutes(10);
