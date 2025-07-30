@@ -152,7 +152,6 @@ public class FSRSTest {
 
             scheduler = Scheduler.builder().build();
             card = Card.builder().build();
-
         }
 
         @Test
@@ -224,14 +223,11 @@ public class FSRSTest {
             assertThat(scheduler).isEqualTo(copiedScheduler);
             assertThat(scheduler.toJson()).isEqualTo(copiedScheduler.toJson());
         }
-
-
     }
 
     @Nested
     @DisplayName("Learning Steps")
     class LearningStepsTests {
-
 
         @Test
         void testGoodLearningSteps() {
@@ -335,7 +331,10 @@ public class FSRSTest {
             card = result.card();
 
             assertThat(card.getState()).isEqualTo(State.REVIEW);
-            int i = (int) Math.round(Duration.between(card.getLastReview(), card.getDue()).toDays());
+            int i =
+                    (int)
+                            Math.round(
+                                    Duration.between(card.getLastReview(), card.getDue()).toDays());
             assertThat(i).isGreaterThanOrEqualTo(1);
         }
 
@@ -357,10 +356,12 @@ public class FSRSTest {
             card = result.card();
             assertThat(card.getState()).isEqualTo(State.REVIEW);
 
-            int i = (int) Math.round(Duration.between(card.getLastReview(), card.getDue()).toDays());
+            int i =
+                    (int)
+                            Math.round(
+                                    Duration.between(card.getLastReview(), card.getDue()).toDays());
             assertThat(i).isGreaterThanOrEqualTo(1);
         }
-
 
         @Test
         void testLearningCardRateHardOneLearningStep() {
@@ -382,7 +383,8 @@ public class FSRSTest {
 
             Instant newDueDatetime = card.getDue();
 
-            double intervalLength = Duration.between(initialDueDatetime, newDueDatetime).toMinutes();
+            double intervalLength =
+                    Duration.between(initialDueDatetime, newDueDatetime).toMinutes();
 
             double expectedIntervalLength = firstLearningStep.toMinutes() * 1.5;
 
@@ -433,7 +435,6 @@ public class FSRSTest {
             assertThat(intervalLength).isEqualTo(expectedIntervalLength);
         }
 
-
         @Test
         void testRelearningCardRateHardOneRelearningStep() {
 
@@ -481,7 +482,8 @@ public class FSRSTest {
 
             Scheduler schedulerWithTwoRelearningSteps =
                     Scheduler.builder()
-                            .relearningSteps(new Duration[] {firstRelearningStep, secondRelearningStep})
+                            .relearningSteps(
+                                    new Duration[] {firstRelearningStep, secondRelearningStep})
                             .build();
 
             Card card = Card.builder().build();
@@ -591,7 +593,6 @@ public class FSRSTest {
             i = (int) Math.round(Duration.between(prevDue, card.getDue()).toDays());
             assertThat(i).isGreaterThanOrEqualTo(1);
         }
-
     }
 
     @Test
@@ -934,7 +935,6 @@ public class FSRSTest {
         assertThat(reviewLogReview1).isNotEqualTo(reviewLogReview2);
     }
 
-
     @Test
     void testLongTermStabilityLearningState() {
         /*
@@ -968,6 +968,4 @@ public class FSRSTest {
 
         assertThat(card.getState()).isEqualTo(State.REVIEW);
     }
-
-
 }
