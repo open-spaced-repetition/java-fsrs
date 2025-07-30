@@ -144,11 +144,19 @@ public class FSRSTest {
     @DisplayName("Serialization")
     class SerializationTests {
 
+        Scheduler scheduler;
+        Card card;
+
+        @BeforeEach
+        void setUp() {
+
+            scheduler = Scheduler.builder().build();
+            card = Card.builder().build();
+
+        }
+
         @Test
         void testReviewLogSerialize() {
-
-            Scheduler scheduler = Scheduler.builder().build();
-            Card card = Card.builder().build();
 
             Rating rating = Rating.AGAIN;
             CardAndReviewLog result = scheduler.reviewCard(card, rating);
@@ -183,10 +191,6 @@ public class FSRSTest {
         @Test
         void testCardSerialize() {
 
-            Scheduler scheduler = Scheduler.builder().build();
-
-            Card card = Card.builder().build();
-
             assertThat(card.toJson()).isInstanceOf(String.class);
 
             String cardJson = card.toJson();
@@ -212,8 +216,6 @@ public class FSRSTest {
 
         @Test
         void testSchedulerSerialize() {
-
-            Scheduler scheduler = Scheduler.builder().build();
 
             assertThat(scheduler.toJson()).isInstanceOf(String.class);
 
@@ -931,7 +933,7 @@ public class FSRSTest {
 
         assertThat(reviewLogReview1).isNotEqualTo(reviewLogReview2);
     }
-    
+
 
     @Test
     void testLongTermStabilityLearningState() {
